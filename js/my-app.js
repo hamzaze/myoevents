@@ -39,11 +39,17 @@ var mainView = myApp.addView('.view-main', {
 
 var isAjaxLoaded=false;
 var isAjaxLoadedLoop=false;
-var pathToAjaxDispatcher="http://www.meridianleadershipconference.com/php/ajaxDispatcher.php";
-var reloadDiscussionEvery=10000;
+var pathToAjaxDispatcher="http://www.myoevents.com/myevents/php/ajaxDispatcher1.php";
+var reloadDiscussionEvery=15000;
 var autoloadWelcomeTemplateEvery=1000*60*3;
 
 var akaLocalStorageWelcomeTemplate=null;
+
+var discussionLoadInterval;
+
+var ajaxLoader="<div class='ajaxLoader left50 top50 abs'><div class='fineloader'></div></div>";
+
+var ajaxLoaderWithBackground="<div class='overlayWhite'>" + ajaxLoader + "</div>";
 
 
 var photoNavbarTemplate='<div class="navbar"> \
@@ -65,10 +71,14 @@ if(!checkCookie()){
         animatePages: false,
         reload: false
     }); 
-    $$("#splashScreen").addClass("passive");
+    
+    $$("#splashScreen").addClass("passive basis");
+    $$("#splashScreen div[data-target='replacewithsplashlogo']").html("");
+    /*
     window.setTimeout(function(){
         $$("#splashScreen").remove();
     }, 1000);
+    */
 }else{
     if(localStorage.getItem('welcomeTemplate')===null){
         mainView.router.load({
@@ -78,7 +88,7 @@ if(!checkCookie()){
         });
         $$("#splashScreen").addClass("passive");
                             window.setTimeout(function(){
-                                $$("#splashScreen").remove();
+                                $$("#splashScreen").addClass("basis");
                             }, 1000);
     }else{
         var token = getCookie("hhUserLoggedInApp");
@@ -347,6 +357,10 @@ DP.validateForm = function(){
 		{
 			switch(whatForm){
 				default:
+                                    if(whatForm=="frmLoginFEUser"){
+                                       $$("#splashScreen").removeClass("passive basis");
+                                       $$("#splashScreen div[data-target='replacewithsplashlogo']").html("");
+                                    }
                                     if(whatForm=="frmUserExperienceSurvey"){
                                         //Check all survey questions answered, otherwise do not submit the survey
                                         if(!handleWithSurveyForm($$("#"+whatForm))){
@@ -371,12 +385,35 @@ DP.validateForm = function(){
                                             }
                                                if(data["success"]==1){
                                                     if(whatForm=="frmLoginFEUser"){
+                                                        
+                                                        if(data["results"]["eventlogo"]){
+                                                            $$("#splashScreen div[data-target='replacewithsplashlogo']").html("").append($$(data["results"]["eventlogo"]));
+                                                            $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
+                                                        }
+                                                        
+                                                        
                                                         setCookie("hhUserLoggedInApp", data["token"], 7);
                                                         localStorage.setItem('welcomeTemplate', JSON.stringify(data));
                                                         mainView.router.load({
                                                             template: Template7.templates.welcomeTemplate,
                                                             context: data
                                                         });
+                                                        
+                                                        if(data["results"]["eventlogo"]){
+                                                            window.setTimeout(function(){
+                                                               $$("#splashScreen").addClass("passive");
+                                                                window.setTimeout(function(){
+                                                                    $$("#splashScreen").addClass("basis");
+                                                                }, 1000);
+                                                            }, 2000);
+                                                        }else{
+                                                            $$("#splashScreen").addClass("passive");
+                                                                window.setTimeout(function(){
+                                                                    $$("#splashScreen").addClass("basis");
+                                                                }, 1000);
+                                                        }
+                                                        
+                                                        
                                                         if(!data["results"]["profilephoto"]){
                                                             window.setTimeout(function(){
                                                                 myApp.popover('.popover-ifnoprofilephoto', $$("#preview"), true);
@@ -594,7 +631,7 @@ function displayPromptForUserNote($this){
                 
             }else{
                 myApp.alert("Note title is required", "Error", function(){
-                    displayPromptForUserNote();
+                    displayPromptForUserNote($this);
                 });
             }
         });
@@ -626,6 +663,15 @@ function getCookie(cname) {
         }
     }
     return "";
+}
+
+function checkEventCookie() {
+    var eventid = getCookie("hhUserLoggedInWhatEvent");
+    if (eventid != "") {
+        return eventid;
+    } else {
+        return false;
+    }
 }
 
 function checkCookie() {
@@ -793,6 +839,10 @@ $$(document).on("click", "a[data-action='markalert']", function(e){
     isAjaxLoaded=true;
     var postData={id: $this.attr("data-id"), context: "markAlertAsViewedFE"};
     
+    if($this.attr("data-eventid")){
+        postData["eventid"]=$this.attr("data-eventid");
+    }
+    
     $$.ajax({
        type: "POST",
        url: pathToAjaxDispatcher,
@@ -873,6 +923,15 @@ $$(document).on("click", "a[data-action='addedititem']", function(e){
     if($this.attr("data-id")){
         postData["id"]=$this.attr("data-id");
     }
+    if($this.attr("data-eventid")){
+        postData["eventid"]=$this.attr("data-eventid");
+    }
+    if($this.attr("data-userid")){
+        postData["userid"]=$this.attr("data-userid");
+    }
+    if($this.attr("data-sectionid")){
+        postData["sectionid"]=$this.attr("data-sectionid");
+    }
     if($this.attr("data-title")){
         postData["title"]=$this.attr("data-title");
     }
@@ -881,7 +940,13 @@ $$(document).on("click", "a[data-action='addedititem']", function(e){
     }
     if(postData["context"]=="wrapCustomPage"){
         $$(".views").addClass("overflow");
-        $$("#superTransitionEffect").css({"background-color": $this.attr("data-bgcolor")}).addClass("bigCircleForTransition");
+        //$$("#superTransitionEffect").css({"background-color": $this.attr("data-bgcolor")}).addClass("bigCircleForTransition");
+        if(postData["id"]==46){
+            displayActionLoader();
+        }
+    }
+    if(postData["context"]=="wrapEventWelcomePage"){
+        $$("#splashScreen").removeClass("passive basis");
     }
     
     $$.ajax({
@@ -895,24 +960,27 @@ $$(document).on("click", "a[data-action='addedititem']", function(e){
                    if(postData["context"]=="wrapCustomPage"){
                        setTimeout(function(){
                             $$("#superTransitionEffect").addClass("zeroopacity");
+                            
                                     mainView.router.load({
                                      template: Template7.templates.customPageTemplate,
-                                     animatePages: false,
+                                     animatePages: true,
                                      reload: false,
                                      context: data
                                  });
-                         window.setTimeout(function(){
-                            $$("#superTransitionEffect").removeClass("bigCircleForTransition");
-                            $this.closest(".flip-container").removeClass("hover");
+                                 
                             if(postData["id"]==46){
                                 $$(document).detectWithScroll();
                             }else if(postData["id"]==44){
                                 $$(document).detectWithScroll1();
                             }
-                            window.setTimeout(function(){
-                                $$("#superTransitionEffect").removeClass("zeroopacity");
-                            }, 1500);
-                         }, 1500);
+                            if(postData["id"]==46){
+                                removeActionLoader();
+                            }
+                            
+                         window.setTimeout(function(){
+                            $this.closest(".flip-container").removeClass("hover");
+                            
+                         }, 500);
                        }, 300);
                     }else if(postData["context"]=="wrapAddNewUserNote"){
                         $this.attr("data-title", "");
@@ -936,12 +1004,44 @@ $$(document).on("click", "a[data-action='addedititem']", function(e){
                         window.setTimeout(function(){
                                 $$("#topHeader div.refreshPoll").removeClass("fadeInRight").addClass("fadeOutRight");
                         }, 10000);
+                    }else if(postData["context"]=="wrapEventWelcomePage"){
+                        setCookie("hhUserLoggedInWhatEvent", data["id"], 7);
+                        var currentPage=mainView.activePage.name;
+                       
+                        if(currentPage=="index"){
+                            
+                            if(data["results"]["eventlogo"]){
+                                    $$("#splashScreen div[data-target='replacewithsplashlogo']").html("").append($$(data["results"]["eventlogo"]));
+                                    $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
+                                }
+                            
+                                 mainView.router.load({
+                                    template: Template7.templates.welcomeTemplate,
+                                    context: data
+                                });
+                                 if(data["results"]["eventlogo"]){
+                                    window.setTimeout(function(){
+                                       $$("#splashScreen").addClass("passive");
+                                        window.setTimeout(function(){
+                                            $$("#splashScreen").addClass("basis");
+                                        }, 1000);
+                                    }, 2000);
+                                }else{
+                                    $$("#splashScreen").addClass("passive");
+                                        window.setTimeout(function(){
+                                            $$("#splashScreen").addClass("basis");
+                                        }, 1000);
+                                }
+
+                        }
+                        return false;
                     }else{
                         mainView.router.load({
                             template: Template7.templates.loginTemplate,
                             animatePages: true,
                             reload: false
                         });
+                        $$("#splashScreen").addClass("passive basis");
                     }
                }else{
                    displayAlert(data["message"], $$("body"));
@@ -955,10 +1055,10 @@ $$(document).on("click", "a[data-action='addedititem']", function(e){
 
 // In page callbacks:
 myApp.onPageInit('discussion', function (page) {
-    autoLoadCurrentDiscussion(page.context.id);
+    autoLoadCurrentDiscussion(page.context.id, true);
     $$('.page-content').scrollTop($$('#bottomOfMessages').offset().top, 0);
-    window.setTimeout(function(){
-        autoLoadCurrentDiscussion(page.context.id);
+    discussionLoadInterval=window.setInterval(function(){
+        autoLoadCurrentDiscussion(page.context.id, false);
     }, reloadDiscussionEvery);
     
   // "page" variable contains all required information about loaded and initialized page 
@@ -966,27 +1066,6 @@ myApp.onPageInit('discussion', function (page) {
 
 myApp.onPageAfterBack('index', function(page){
     console.log("we are back to index, again");
-    alert("it should work");
-});
-
-myApp.onPageInit('agenda', function (page) {
-    var photo=$$("div.wrapAgendaDetails [data-action='openphotoinpopup']").attr("data-src");
-    var myPhotoBrowserPopup = myApp.photoBrowser({
-    photos : [
-        photo
-    ],
-    type: 'popup',
-    navbarTemplate: photoNavbarTemplate
-});
-    
-    
-    $$(document).on("click", "[data-action='openphotoinpopup']", function(e){
-        e.preventDefault();
-        myPhotoBrowserPopup.open();
-    });
-    
-    
-  // "page" variable contains all required information about loaded and initialized page 
 });
 
 myApp.onPageInit('index', function (page) {
@@ -1040,6 +1119,16 @@ myApp.onPageBack('*', function(page){
 myApp.onPageInit('question', function (page) {
     console.log('question page initialized agendaid=' + page.context.id);
     autoLoadCurrentAgendaQuestions(page.context.id);
+});
+
+myApp.onPageInit('agenda', function (page) {
+    console.log('agenda page initialized =' + page.context.id);
+    autoLoadCurrentAgenda(page.context.id);
+});
+
+myApp.onPageInit('survey', function (page) {
+    console.log('survey page initialized =' + page.context.id + " : " + page.context.eventid + " : " + page.context.sectionid);
+    autoLoadCurrentSurvey(page.context.id, page.context.eventid, page.context.sectionid);
 });
 
 myApp.onPageInit('poll', function (page) {
@@ -1203,32 +1292,79 @@ function checkIsUserStillLoggedIn(token){
        success: function(data){
            isAjaxLoaded=false;
                if(data["success"]==1){
-                   localStorage.setItem('welcomeTemplate', JSON.stringify(data));
-                   var currentPage=mainView.activePage.name;
-                   if(currentPage=="index"){
-                        if(localStorage.getItem('welcomeTemplate')!==null){
-                            var data=JSON.parse(localStorage.getItem('welcomeTemplate'));
-                            mainView.router.load({
-                                template: Template7.templates.welcomeTemplate,
-                                animatePages: false,
-                                reload: false,
-                                context: data
-                            });
-                        }else{
-                            mainView.router.load({
-                                template: Template7.templates.loginTemplate,
-                                animatePages: false,
-                                reload: false
-                            });
+                    if(data["results"]["eventname"]){
+                        localStorage.setItem('welcomeTemplate', JSON.stringify(data));
+                        var currentPage=mainView.activePage.name;
+                        if(currentPage=="index"){
+                             if(localStorage.getItem('welcomeTemplate')!==null){
+                                
+                                if(data["results"]["eventlogo"]){
+                                    $$("#splashScreen div[data-target='replacewithsplashlogo']").html("").append($$(data["results"]["eventlogo"]));
+                                    $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
+                                }
+                                 
+                                 
+                                 var data=JSON.parse(localStorage.getItem('welcomeTemplate'));
+                                 mainView.router.load({
+                                     template: Template7.templates.welcomeTemplate,
+                                     animatePages: false,
+                                     reload: false,
+                                     context: data
+                                 });
+                             }else{
+                                 mainView.router.load({
+                                     template: Template7.templates.loginTemplate,
+                                     animatePages: false,
+                                     reload: false
+                                 });
+                             }
+                             if(data["results"]["eventlogo"]){
+                                window.setTimeout(function(){
+                                   $$("#splashScreen").addClass("passive");
+                                    window.setTimeout(function(){
+                                        $$("#splashScreen").addClass("basis");
+                                    }, 1000);
+                                }, 2000);
+                            }else{
+                                $$("#splashScreen").addClass("passive");
+                                    window.setTimeout(function(){
+                                        $$("#splashScreen").addClass("basis");
+                                    }, 1000);
+                            }
+
                         }
-                        $$("#splashScreen").addClass("passive");
-                            window.setTimeout(function(){
-                                $$("#splashScreen").remove();
-                            }, 1000);
-                        
-                   }
+                    }else{
+                        localStorage.setItem('listEvents', JSON.stringify(data));
+                        var currentPage=mainView.activePage.name;
+                        if(currentPage=="index"){
+                             if(localStorage.getItem('listEvents')!==null){
+                                 var data=JSON.parse(localStorage.getItem('listEvents'));
+                                 mainView.router.load({
+                                     template: Template7.templates.listEvents,
+                                     animatePages: false,
+                                     reload: false,
+                                     context: data
+                                 });
+                             }else{
+                                 mainView.router.load({
+                                     template: Template7.templates.loginTemplate,
+                                     animatePages: false,
+                                     reload: false
+                                 });
+                             }
+                             $$("#splashScreen").addClass("passive");
+                                 window.setTimeout(function(){
+                                     $$("#splashScreen").addClass("basis");
+                                 }, 1000);
+
+                        }
+                    }
                    return true;
                }else{
+                   $$("#splashScreen").addClass("passive");
+                            window.setTimeout(function(){
+                                $$("#splashScreen").addClass("basis");
+                            }, 1000);
                    return false;
                }
        }, error: function(){
@@ -1278,6 +1414,79 @@ function autoLoadWelcomeTemplate(){
            isAjaxLoadedLoop=false;
        }
     });
+}
+
+function autoLoadCurrentSurvey(id, eventid, sectionid){
+    if(isAjaxLoaded) return false;
+    isAjaxLoaded=true;
+    var postData={id: id, eventid: eventid, sectionid: sectionid, context: "loadCurrentSurvey"};
+    
+    $$.ajax({
+       type: "POST",
+       url: pathToAjaxDispatcher,
+       data: postData,
+       dataType: "json",
+       success: function(data){
+           isAjaxLoaded=false;
+               if(data["success"]==1){
+                   if($$("[data-target='ifnosurvey'] > div.ifnosurvey").length>0){
+                      $$("[data-target='ifnosurvey'] > div.ifnosurvey").remove(); 
+                   }
+                   if(data['ifnosurvey']){
+                       $$("[data-target='ifnosurvey']").prepend(data["ifnosurvey"]);
+                   }
+                   $$("[data-target='surveyquestions']").html(data["surveyquestions"]);
+                   $$("[data-target='surveyagendatop']").html(data["surveyagendatop"]);
+               }else{
+                   
+               }
+           }, error: function(){
+           isAjaxLoaded=false;
+       }
+   });
+}
+
+function autoLoadCurrentAgenda(id){
+    if(isAjaxLoaded) return false;
+    isAjaxLoaded=true;
+    var postData={id: id, context: "loadCurrentAgenda"};
+    
+    $$.ajax({
+       type: "POST",
+       url: pathToAjaxDispatcher,
+       data: postData,
+       dataType: "json",
+       success: function(data){
+           isAjaxLoaded=false;
+               if(data["success"]==1){
+                   $$("[data-target='mapphoto']").html(data["mapimage"]);
+                   if(data["speakerdetails"]){
+                       $$("[data-target='speakerdetails']").html(data["speakerdetails"]);
+                   }
+                   
+                    var photo=$$("div.wrapAgendaDetails [data-action='openphotoinpopup']").attr("data-src");
+                    var myPhotoBrowserPopup = myApp.photoBrowser({
+                    photos : [
+                        photo
+                    ],
+                    type: 'popup',
+                    navbarTemplate: photoNavbarTemplate
+                });
+
+
+                    $$(document).on("click", "[data-action='openphotoinpopup']", function(e){
+                        e.preventDefault();
+                        myPhotoBrowserPopup.open();
+                    });
+                   
+                   
+               }else{
+                   
+               }
+           }, error: function(){
+           isAjaxLoaded=false;
+       }
+   });
 }
 
 function autoLoadCurrentAgendaQuestions(id){
@@ -1336,9 +1545,18 @@ function autoLoadCurrentPoll(id){
     });
 }
 
-function autoLoadCurrentDiscussion(id){
+function autoLoadCurrentDiscussion(id, isAjaxLoader){
+    var currentPage=mainView.activePage.name;
+    if(currentPage!="discussion"){
+        window.clearInterval(discussionLoadInterval);
+        isAjaxLoaded=false;
+        return false;
+    }
     if(isAjaxLoaded) return false;
     isAjaxLoaded=true;
+    if(isAjaxLoader){
+        displayActionLoader();
+    }
     var postData={id: id, context: "loadCurrentDiscussion"};
     
     $$.ajax({
@@ -1348,6 +1566,9 @@ function autoLoadCurrentDiscussion(id){
        dataType: "json",
        success: function(data){
            isAjaxLoaded=false;
+           if(isAjaxLoader){
+                removeActionLoader();
+            }
                if(data["success"]==1){
                    $$("#wrapDiscussionPosts[data-id='"+id+"'] > div.bodytext").html("").append($$(data["content"]));
                    
@@ -1358,16 +1579,19 @@ function autoLoadCurrentDiscussion(id){
                         targetItem.attr("data-counter", newCounter).find("span[data-target='topiclist']").text(newCounter);
                         
                         });
+                        if(isAjaxLoader){
+                            $$('.page-content').scrollTop($$('#bottomOfMessages').offset().top, 0);
+                        }
                        //$$('.page-content').scrollTop($$('#bottomOfMessages').offset().top, 0);
                     }, 200);
                    
                    
                }
-               window.setTimeout(function(){
-                    autoLoadCurrentDiscussion(id);
-                }, reloadDiscussionEvery);
             return false;
        }, error: function(){
+           if(isAjaxLoader){
+                removeActionLoader();
+            }
            isAjaxLoaded=false;
        }
     });
@@ -1427,64 +1651,17 @@ window.setInterval(function(){
     autoLoadWelcomeTemplate();
 }, autoloadWelcomeTemplateEvery);
 
-/*
-myApp.onPageInit('page-name',function(page){
-  var pageContainer=$$(page.container);
-  pageContainer.on('click','input[type=file]',function(e){
-      alert("here we go");
-    var target=$$(this);
-    var buttons=[{text:'<div data-my-source="CAMERA">take photo</div>'},
-                 {text:'<div data-my-source="PHOTOLIBRARY">library</div>'},
-                 {text:'<div data-my-source="SAVEDPHOTOALBUM">albums</div>'}];
-    var actions=myApp.actions(target,buttons);
-    $$(actions).once('click',function(e){
-      var source=$$(this).attr('data-my-source');
-      alert(source);
-      uploadImage(page,source);
-      myApp.closeModal(actions);
-    });
-  });
-});
 
-function uploadImage(page,source){
-  var pageContainer=$$(page.container);
-  ! function capturePhoto(){
-      var pictureSource = navigator.camera.PictureSourceType[source]; 
-      var destinationType = navigator.camera.DestinationType.FILE_URI;
-      navigator.camera.getPicture(onSuccess,onFail,{
-        destinationType:destinationType,
-        sourceType:pictureSource,
-        correctOrientation:true,
-        allowEdit:false
-      });
-  }();
-  function clearCameraCache(){navigator.camera.cleanup();}
-  function onFail(message){ alert(message); return;}   
-  function onSuccess(dataurl) {
-      alert("Succeess " + dataurl);
-        var tmpl = '<img src="' + dataurl + '" width="100%" height="100%"/>';
-        pageContainer.find('.page-content').append(tmpl);
-        window.resolveLocalFileSystemURL(dataurl, function (fileEntry) {
-            fileEntry.file(function (fileObject) {
-                var reader = new FileReader();
-                reader.onloadend = function(evt){
-                    var base = evt.target.result.split(',')[1];
-                    $$.ajax({
-                        type: "post", 
-                        url: pathToAjaxDispatcher,
-                        data: {base: base},
-                        success: function (data) {
-                        },
-                        error: function (data) {
-                        }
-                    });
-                    reader.readAsDataURL(fileObject);
-                };
-            },
-                    function () {
-                        return;
-                    });
-        });
+function displayActionLoader(){
+    //Display some site effects to indicate user has clicked on something and just waiting for a response
+    if($$("body > div.overlayWhite").length<1){
+        $$("body").prepend(ajaxLoaderWithBackground);
     }
 }
-*/
+
+function removeActionLoader(){
+    $$("body > div.overlayWhite").addClass("passive");
+    window.setTimeout(function(){
+        $$("body > div.overlayWhite").remove();
+    }, 800);
+}

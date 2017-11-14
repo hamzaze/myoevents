@@ -1,7 +1,10 @@
 <div class="page" data-page="me">
     <div class="overlayBlue">
         <form action="#" method="post" id="frmEditProfile" data-action="handlewithform">
-            <div class="hidden"><input type="hidden" name="context" value="editAPPProfileDetails" /></div>
+            <div class="hidden">
+                <input type="hidden" name="context" value="editProfileDetails" />
+                <input type="hidden" name="aEOE_eventid" value="{{eventid}}" />
+            </div>
         <div id="bottomHeader" class="bottomHeader abs">
             <div>
                 <div class="bg-magenta text-center height54">
@@ -16,7 +19,7 @@
             </div>
         </div>
         <div id="topHeader" class="topHeader abs">
-            <div class="businessConf2 bg-orange text-right height44">
+            <div class="businessConf2 bg-dark-opacity text-right height44">
             <div class="abs hasBackLink">
                 <a href="#" class="link back-link back" data-templatename="welcomeTemplate"><img src="images/goback_arrow.png" alt="Back" /></a>
             </div>

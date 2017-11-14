@@ -21,7 +21,9 @@
   <body>
       
       <div class="abs popupInfo text-center" id="splashScreen">
-          <div class="logo abs top50 left50 text-center"><img src="images/logo.png" alt="Meridianbusinessconference - App" /></div>
+          <div class="logo abs top50 left50 text-center">
+             <div class="animated" data-target="replacewithsplashlogo"></div>
+          </div>
       </div>
     <!-- Status bar overlay for full screen mode (PhoneGap) -->
     <div class="statusbar-overlay"></div>
@@ -56,7 +58,7 @@
                         <div class="overlayBlue">
                             <div class="page-content">
                                 <div id="loginBlock" class="loginBlock text-center">
-                                    <div class="logo"><img src="images/logo.png" alt="Meridianbusinessconference - App" /></div>
+                                    <div class="logo"><img src="images/logo.png" alt="Myoevents.com - App" /></div>
                                     <div class="wrapAllForms">
                                         <div id="frmLoginUserWrap" class="wrapLoginForms animated abs" data-target="frmLoginUserWrap">
                                             <form action="#" id="frmLoginFEUser" method="post" data-action="handlewithform">
@@ -71,7 +73,7 @@
                                                     <div class="mf-input"><i class="f7-icons">lock</i><input type="password" class="mf-input" name="aEOE_password" placeholder="Password" required="required" autocorrect="off" autocapitalize="none" /></div>
                                                 </div>
                                                 <div class="fRow text-center">
-                                                    <button class="button button-fill color-orange">Login</button>
+                                                    <button class="button btn btn-white">Login</button>
                                                 </div>
                                             </form>
                                             <div class="fRow text-center"><a href="#" data-action="toggleform" data-target="#frmForgotPasswordWrap" data-animateway="1">Forgot Password?</a></div>
@@ -86,7 +88,7 @@
                                                     <div class="mf-input"><i class="f7-icons icon-email">email</i><input type="email" class="mf-input" name="aEOE_email" placeholder="Email Address" required="required" autocorrect="off" autocapitalize="none" /></div>
                                                 </div>
                                                 <div class="fRow text-center">
-                                                    <button class="button button-fill color-orange">Retrieve Password</button>
+                                                    <button class="button btn btn-white">Retrieve Password</button>
                                                 </div>
                                             </form>
                                             <div class="fRow text-center"><a href="#" data-action="toggleform" data-target="#frmLoginUserWrap" data-animateway="2">Back to Login</a></div>
@@ -98,26 +100,58 @@
                     </div>
                 </script>
                 
+                <script id="listEvents" type="text/template7">
+                    <div data-page="index" class="page">
+                        <div class="overlayBlue">
+                            <div class="page-content">
+                                <div id="wrapWelcomeBlocks" class="list-block wrapWelcomeBlocks">
+                                    {{#if results}}
+                                        {{#if results.success}}
+                                            {{#if results.welcometext}}
+                                                <div class="h3 text-white text-center"><strong>{{results.welcometext}}</strong></div>
+                                                <div class="padd20"></div>
+                                            {{/if}}
+                                            {{#each results.records}} 
+                                                <div class="relative fullwidth">
+                                                    <div class="relative item text-center text-white item1">
+                                                        <a{{actions}} data-href="{{realpath}}" href="{{realpath}}" target="_blank" data-id="{{id}}" class="{{linkClass}}">
+                                                            <strong>{{name}}</strong>
+                                                            <div>
+                                                                <span class="text-muted">{{fromto}}</span>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {{/each}}  
+                                        {{/if}}
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </script>
+                
                 <script id="welcomeTemplate" type="text/template7">
                     <div data-page="index" class="page">
                         <div class="overlayBlue">
+                            {{#if results}}
+                                {{#if results.success}}
+                                    {{#if results.eventname}}
                             <div id="topHeader" class="topHeader abs">
-                            <nav id="menu" class="navbar">
-                                <ul class="relative">
+                            <nav id="menu" class="navbar animated">
+                                <ul class="row">
                                     {{#if results}}
                                         {{#if results.success}}
                                             {{#if results.profile}}
-                                                <li class="relative"><a data-target="myprofile" href="me.html" class="relative" data-context='{{stringify results.profile}}'>Edit My Profile Details</a></li>
-                                            {{/if}}
-                                            {{#if results.contact}}
-                                            <li class="relative"><a href="contact.html" class="relative" data-context='{{stringify results.contact}}'>Contact Us</a></li>
+                                                <li class="col-50 text-center"><a data-target="myprofile" href="me.html" class="relative bg-mf-green" data-context='{{stringify results.profile}}'><strong>EDIT PROFILE</strong></a></li>
                                             {{/if}}
                                         {{/if}}
                                     {{/if}}        
-                                    <li class="relative"><a href="#" data-action="addedititem" data-context="logoutFEUser" class="relative"><strong>LOGOUT</strong></a></li>
+                                    <li class="col-50 text-center"><a href="#" data-action="addedititem" data-context="logoutFEUser" class="relative bg-warning"><strong>LOGOUT</strong></a></li>
+                                    <div class="noFloat"></div>
                                 </ul>
                             </nav>
-            <div class="businessConf2 bg-orange text-left padd10 padd-right44">
+            <div class="businessConf2 bg-dark-opacity text-left padd10 padd-right44">
             
             {{#if results}}
             {{#if results.success}}
@@ -127,34 +161,64 @@
             </a>
             {{else}}
             <a id="preview" class="abs top50" href="#" data-target="#menu" data-action="togglemenu">
-            <img src="http://www.meridianleadershipconference.com/app/images/profileIcon.png" />
+            <img src="http://www.myoevents.com/images/profileIcon.png" />
             </a>
             {{/if}}
             {{/if}}
             {{/if}} 
-            <strong>Leadership Conference</strong> {{js "new Date().getFullYear()"}}</div></div>
+            <strong>
+            {{#if results}}
+                {{#if results.eventname}}
+                {{results.eventname}}
+                {{/if}}
+            {{/if}}
+            </strong></div></div>
+                                            {{/if}}
+                                        {{/if}}
+                                    {{/if}}      
                             <div class="page-content">
                                 <div id="wrapWelcomeBlocks" class="list-block wrapWelcomeBlocks">
                                     {{#if results}}
                                     {{#if results.success}}
-                                        <div class="row">
-                                        {{#each results.records}}
-                                            <div class="col-33 tablet-20">
-                                                <div class="item text-center text-white">
-                                                        {{#if unreadAlerts}}
-                                                            <div class="badge abs text-center"><span class="abs top50 left50">{{unreadAlerts}}</span></div>
-                                                        {{/if}}
-                                                        {{#if unvotedPolls}}
-                                                            <div class="badge abs text-center"><span class="abs top50 left50">{{unvotedPolls}}</span></div>
-                                                        {{/if}}
-                                                        <a{{actions}} data-href="{{realpath}}" href="{{realpath}}" target="_blank" data-id="{{id}}" data-bgcolor="{{color}}" class="{{linkClass}}">
-                                                            <div class="circle" style="background-color: {{color}}; background-image: url({{image}})"></div>
-                                                        </a>
-                                                <h1 class="small">{{name}}</h1>
+                                        {{#if results.welcometext}}
+                                            <div class="h3 text-white text-center"><strong>{{results.welcometext}}</strong></div>
+                                            <div class="padd20"></div>
+                                        {{/if}}   
+                                        
+                                        {{#if results.eventname}}
+                                                <div class="row">
+                                            {{#each results.records}}
+                                                <div class="col-33 tablet-20">
+                                                    <div class="item text-center text-white">
+                                                            {{#if unreadAlerts}}
+                                                                <div class="badge abs text-center"><span class="abs top50 left50">{{unreadAlerts}}</span></div>
+                                                            {{/if}}
+                                                            {{#if unvotedPolls}}
+                                                                <div class="badge abs text-center"><span class="abs top50 left50">{{unvotedPolls}}</span></div>
+                                                            {{/if}}
+                                                            <a{{actions}} data-href="{{realpath}}" href="{{realpath}}" target="_blank" data-id="{{id}}" data-bgcolor="{{color}}" class="{{linkClass}}">
+                                                                <div class="circle" style="background-color: {{color}}; background-image: url({{image}})"></div>
+                                                            </a>
+                                                    <h1 class="small">{{name}}</h1>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        {{/each}}
-                                        </div>
+                                            {{/each}}
+                                                </div>
+                                        {{else}}
+                                            {{#each results.records}} 
+                                                <div class="relative fullwidth">
+                                                    <div class="relative item text-center text-white item1">
+                                                        <a{{actions}} data-href="{{realpath}}" href="{{realpath}}" target="_blank" data-id="{{id}}" class="{{linkClass}}">
+                                                            <strong>{{name}}</strong>
+                                                            <div>
+                                                                <span class="text-muted">{{fromto}}</span>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {{/each}}    
+                                        {{/if}}        
+                                        
                                     {{else}}
                                     <div class="text-center padd10">{{results.message}}</div>
                                     {{/if}}
@@ -178,7 +242,7 @@
                     <div data-page="custom" class="page">
                         <div class="overlayBlue">
                             <div id="topHeader" class="topHeader abs">
-                                <div class="businessConf2 bg-orange text-center height44">
+                                <div class="businessConf2 bg-darkblue text-center height44">
                                 {{#if attendees}}
                                 <div id="wrapCurrentAlphabetHere"><div class="wrapAlpha text-white text-left"><strong><span data-target="currentLetter">A</span></strong></div></div>
                                 {{/if}}
@@ -226,7 +290,7 @@
                                                         <div class="item text-left text-white">
                                                             <div class="flexbox">
                                                                 <div class="image-holder"><img src="{{image}}" alt="{{name}}" /></div>
-                                                                <div class="flex1"><i class="f7-icons top50 abs text-orange">chevron_right</i><h3>{{name}}</h3></div>
+                                                                <div class="flex1"><i class="f7-icons top50 abs text-blue">chevron_right</i><h3>{{name}}</h3></div>
                                                             </div>
                                                         </div>
                                                         {{#if url}}
@@ -251,7 +315,7 @@
                                                                 <div class="relative">
                                                                     <div class="image-holder" style="background-image: url(images/facebook.png);"><div class="relative"></div></div>
                                                                     <div class="flex2"><div class="abs top50 fullwidth">
-                                                                        <i class="f7-icons top50 abs text-orange">chevron_right</i><h2>Facebook</h2><span>{{facebooktext}}</span>
+                                                                        <i class="f7-icons top50 abs text-blue">chevron_right</i><h2>Facebook</h2><span>{{facebooktext}}</span>
                                                                     </div></div>
                                                                 </div>
                                                             </div>
@@ -263,7 +327,7 @@
                                                                 <div class="relative">
                                                                     <div class="image-holder" style="background-image: url(images/twitter.png);"><div class="relative"></div></div>
                                                                     <div class="flex2"><div class="abs top50 fullwidth">
-                                                                        <i class="f7-icons top50 abs text-orange">chevron_right</i><h2>Twitter</h2><span>{{twittertext}}</span>
+                                                                        <i class="f7-icons top50 abs text-blue">chevron_right</i><h2>Twitter</h2><span>{{twittertext}}</span>
                                                                     </div></div>
                                                                 </div>
                                                             </div>
@@ -275,7 +339,7 @@
                                                                 <div class="relative">
                                                                     <div class="image-holder" style="background-image: url(images/linkedin.png);"><div class="relative"></div></div>
                                                                     <div class="flex2"><div class="abs top50 fullwidth">
-                                                                        <i class="f7-icons top50 abs text-orange">chevron_right</i><h2>Linkedin</h2><span>{{linkedintext}}</span>
+                                                                        <i class="f7-icons top50 abs text-blue">chevron_right</i><h2>Linkedin</h2><span>{{linkedintext}}</span>
                                                                     </div></div>
                                                                 </div>
                                                             </div>
@@ -295,7 +359,7 @@
                                                             <div class="row">
                                                                 <div class="col-100">
                                                                     {{#each results.records}}
-                                                                        <a href="alert.html" data-action="markalert" data-id="{{id}}" data-context='{{stringify this}}'>
+                                                                        <a href="alert.html" data-action="markalert" data-id="{{id}}" data-eventid="{{eventid}}" data-context='{{stringify this}}'>
                                                                         <div class="item text-left text-white{{itemClass}}">
                                                                             <div class="flexbox">
                                                                                 <div class="flex1"><i class="f7-icons top50 abs">chevron_right</i><h3>{{name}}</h3><span class="small">Alert Posted: {{createdon}}</span></div>
@@ -322,8 +386,8 @@
                                                                             <a href="infobooth.html" data-context='{{stringify this}}'>
                                                                             <div class="item text-left text-white{{itemClass}}">
                                                                                 <div class="flexbox">
-                                                                                    <div class="image-holder" style="background-image: url({{image}});"></div>
-                                                                                    <div class="flex1"><i class="f7-icons top50 abs text-orange">chevron_right</i><h3>{{name}}</h3></div>
+                                                                                    <div class="image-holder" style="background-image: url({{icon}});"></div>
+                                                                                    <div class="flex1"><i class="f7-icons top50 abs text-blue">chevron_right</i><h3>{{name}}</h3></div>
                                                                                 </div>
                                                                             </div>
                                                                             </a>
@@ -351,7 +415,7 @@
                                                                                     <div class="item text-left text-white{{itemClass}}">
                                                                                         <div class="flexbox">
                                                                                             <img class="circle" src="{{image}}" alt="{{firstname}} {{lastname}}" />
-                                                                                            <div class="flex1"><i class="f7-icons top50 abs text-orange">chevron_right</i><h3>{{firstname}} {{lastname}}</h3><span class="small">{{jobtitle}}</span></div>
+                                                                                            <div class="flex1"><i class="f7-icons top50 abs text-orange">chevron_right</i><h3>{{firstname}} {{lastname}}</h3></div>
                                                                                         </div>
                                                                                     </div>
                                                                                     </a>
@@ -404,7 +468,7 @@
                                                                                             <div class="item text-left text-white">
                                                                                                 <div class="flexbox">
                                                                                                     <img class="circle" src="{{image}}" alt="{{name}}" />
-                                                                                                    <div class="flex1"><i class="f7-icons top50 abs text-orange">chevron_right</i><h3>{{name}}</h3><span class="small">{{subinformation}}</span></div>
+                                                                                                    <div class="flex1"><i class="f7-icons top50 abs text-blue">chevron_right</i><h3>{{name}}</h3><span class="small">{{subinformation}}</span></div>
                                                                                                 </div>
                                                                                             </div>
                                                                                             </a>
@@ -428,7 +492,7 @@
                                                                                             <a href="discussion.html" data-id="{{id}}" data-count="{{count}}" data-target="topiclist" data-context='{{stringify this}}'>
                                                                                             <div class="item text-left text-white">
                                                                                                 <div class="flexbox">
-                                                                                                    <div class="flex1"><i class="f7-icons top50 abs">chevron_right</i><h3>{{name}}</h3><span class="small"><span data-target="topiclist">{{count}}</span> Comments</span></div>
+                                                                                                    <div class="flex1"><i class="f7-icons top50 abs text-blue">chevron_right</i><h3>{{name}}</h3><span class="small"><span data-target="topiclist">{{count}}</span> Comments</span></div>
                                                                                                 </div>
                                                                                             </div>
                                                                                             </a>
@@ -512,7 +576,7 @@
                                                                                                     <div class="swipeout-content item-content item text-left text-white">
                                                                                                         <a class="relative" href="note.html" data-ignore-cache="true" data-id="{{id}}" data-context='{{stringify this}}'>
                                                                                                             <div class="flexbox">
-                                                                                                                <div class="flex1"><i class="f7-icons top50 abs text-orange">chevron_right</i><h3>{{name}}</h3><span class="small">Modified: {{modifieddate}} - {{modifiedtime}}</span></div>
+                                                                                                                <div class="flex1"><i class="f7-icons top50 abs text-blue">chevron_right</i><h3>{{name}}</h3><span class="small">Modified: {{modifieddate}} - {{modifiedtime}}</span></div>
                                                                                                             </div>
                                                                                                         </a>
                                                                                                     </div>
@@ -552,7 +616,7 @@
                                                                                                     {{#if this.records}}
                                                                                                         <div class="wrapAgendaDay text-left padd10">{{dlongdate}}</div>
                                                                                                         {{#each this.records}}
-                                                                                                            <a href="{{link}}" data-id="{{id}}" data-context='{{stringify this}}'>
+                                                                                                            <a href="{{link}}" data-id="{{id}}" data-eventid="{{eventid}}" data-sectionid="{{sectionid}}" data-context='{{stringify this}}'>
                                                                                                         <div class="item text-left text-white{{classItem}}">
                                                                                                             <div class="flexbox">
                                                                                                                 <div class="wrapTime text-center"><div class="abs top50 left50">{{stime}}</div></div>
@@ -624,6 +688,35 @@
                                                                                     </div>
                                                                                 </div>
                                                                             {{else}}
+                                                                                
+                                                                                <!-- CONTACTS -->
+                                                                                {{#if contacts}}
+                                                                                    <div class="text-white">
+                                                                                        <div id="wrapContacts" class="wrapAttractions">
+                                                                                        <div class="padd20">{{introtext}}</div>
+                                                                                            {{#if results}}
+                                                                                                {{#if results.records}}
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-100">
+                                                                                                            {{#each results.records}}
+                                                                                                                    <a class="external" href="mailto:{{email}}">
+                                                                                                                    <div class="item text-left text-white">
+                                                                                                                        <div class="flexbox">
+                                                                                                                            <img class="circle" src="{{image}}" alt="{{name}}" />
+                                                                                                                            <div class="flex1"><div class="abs top50"><img src="images/emailicon.png" alt="" /></div><h3>{{name}}</h3><span class="small">{{position}}</span></div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    </a>
+                                                                                                            {{/each}}
+                                                                                                         </div>
+                                                                                                    </div>
+                                                                                                {{/if}}
+                                                                                            {{/if}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                {{else}}
+                                                                                    
+                                                                                {{/if}}    
                                                                             
                                                                             {{/if}}
 
