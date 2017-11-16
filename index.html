@@ -21,6 +21,7 @@
   <body>
       
       <div class="abs popupInfo text-center" id="splashScreen">
+          <div class="overlayBlue"></div>
           <div class="logo abs top50 left50 text-center">
              <div class="animated" data-target="replacewithsplashlogo"></div>
           </div>
@@ -67,10 +68,10 @@
                                                     <input type="hidden" name="isFromAPP" value="1" />
                                                 </div>
                                                 <div class="fRow text-center">
-                                                    <div class="mf-input"><i class="f7-icons icon-email">email</i><input type="email" class="mf-input" name="aEOE_email" placeholder="Email Address" required="required" autocorrect="off" autocapitalize="none" /></div>
+                                                    <div class="mf-input"><i class="f7-icons icon-email">email</i><input type="email" class="mf-input" name="aEOE_email" placeholder="Email Address" required="required" autocorrect="off" autocapitalize="none" oninvalid="setCustomValidity('Field Required!')" onchange="try{setCustomValidity('')}catch(e){}" data-title="Field Required!" /></div>
                                                 </div>
                                                 <div class="fRow text-center">
-                                                    <div class="mf-input"><i class="f7-icons">lock</i><input type="password" class="mf-input" name="aEOE_password" placeholder="Password" required="required" autocorrect="off" autocapitalize="none" /></div>
+                                                    <div class="mf-input"><i class="f7-icons">lock</i><input type="password" class="mf-input" name="aEOE_password" placeholder="Password" required="required" autocorrect="off" autocapitalize="none" oninvalid="setCustomValidity('Field Required!')" onchange="try{setCustomValidity('')}catch(e){}" data-title="Field Required!" /></div>
                                                 </div>
                                                 <div class="fRow text-center">
                                                     <button class="button btn btn-white">Login</button>
@@ -415,7 +416,7 @@
                                                                                     <div class="item text-left text-white{{itemClass}}">
                                                                                         <div class="flexbox">
                                                                                             <img class="circle" src="{{image}}" alt="{{firstname}} {{lastname}}" />
-                                                                                            <div class="flex1"><i class="f7-icons top50 abs text-orange">chevron_right</i><h3>{{firstname}} {{lastname}}</h3></div>
+                                                                                            <div class="flex1"><i class="f7-icons top50 abs text-white">chevron_right</i><h3>{{firstname}} {{lastname}}</h3></div>
                                                                                         </div>
                                                                                     </div>
                                                                                     </a>

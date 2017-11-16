@@ -62,6 +62,83 @@ div.ajaxLoader{
     z-index: 20010
 }
 
+div.errMessage1{
+    position: absolute;
+    z-index: 14100;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+
+body > div.errMessage1{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -1000px;
+    opacity: 0;
+    z-index: 14100;
+    width: 100%;
+    text-align: center;
+}
+
+body > div.errMessage1.activated, body > div.successMessage1.activated{
+    transition: top 0.3s ease-out 0s;
+    -moz-transition: top 0.3s ease-out 0s;
+    -webkit-transition: top 0.3s ease-out 0s;
+}
+
+body > div.successMessage1{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -1000px;
+    width: 100%;
+    z-index: 14100;
+    text-align: center;
+}
+
+div.errMessage1 h3, div.errMessage1 p, div.successMessage1 h3, div.successMessage1 p{
+    margin: 0;
+    padding: 0;
+}
+
+div.errMessage1 .closeOverlay.abs{
+    top: 0;
+    left: auto;
+    right: 5px;
+}
+
+div.errMessage1 .closeOverlay.abs a.relative{
+    color: #fff;
+    font-size: 18px;
+}
+
+.errContent, div.errMessage1 .infoContent{
+    display: block;
+    position: relative;
+    background-color: #e94937;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.successContent{
+    display: block;
+    position: relative;
+    background-color: #9acb6b;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
 div.fRow button.btn > .loader, div.ajaxLoader > .fineloader {
   display: none;
   border: 3px solid #f2f2f2;
@@ -2180,6 +2257,18 @@ div.wrapQuestion div.mf-radio input.mf-radio:checked + span.mf-radio:before{
     box-shadow: 0 35px 30px rgba(0,0,0, 0.9);
     -moz-box-shadow: 0 35px 30px rgba(0,0,0, 0.9);
     -webkit-box-shadow: 0 35px 30px rgba(0,0,0, 0.9);
+}
+
+#splashScreen{
+    background-image: url("../images/bgLogin.jpg");
+    /*background-image: none;*/
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#splashScreen div.logo{
+    z-index: 10;
 }
 
 #splashScreen.passive.basis{

@@ -41,7 +41,7 @@ var isAjaxLoaded=false;
 var isAjaxLoadedLoop=false;
 var pathToAjaxDispatcher="http://www.myoevents.com/myevents/php/ajaxDispatcher1.php";
 var reloadDiscussionEvery=15000;
-var autoloadWelcomeTemplateEvery=1000*60*3;
+var autoloadWelcomeTemplateEvery=1000*60*(3/3);
 
 var akaLocalStorageWelcomeTemplate=null;
 
@@ -260,7 +260,7 @@ DP.validateForm = function(){
         //run checks
 		var countTrueFilled=0;
 		
-		stringAlert="<h3>Required fields</h3>";
+		stringAlert="";
         for (i=0;i<this.valSetting.fields.length;i++){
 			var fName=this.valSetting.fields[i].id;
 			var fVal=this.valSetting.fields[i].val;
@@ -380,7 +380,7 @@ DP.validateForm = function(){
                                        dataType: "json",
                                        success: function(data){
                                            isAjaxLoaded=false;
-                                           if(whatForm!="frmEditProfile" && whatForm!="frmUserExperienceSurvey" && whatForm!="frmUserExperiencePoll"){
+                                           if(whatForm!="frmEditProfile" && whatForm!="frmUserExperienceSurvey" && whatForm!="frmUserExperiencePoll" && whatForm!="frmEditUserNote"){
                                                 resetForm($$("#"+whatForm));
                                             }
                                                if(data["success"]==1){
@@ -439,7 +439,7 @@ DP.validateForm = function(){
                                                         }, 200);
                                                         
                                                     }else if(whatForm=="frmEditUserNote"){
-                                                        $$("#wrapTopicTextHolder").removeClass("activated").find("textarea").val("");
+                                                        $$("#wrapTopicTextHolder").removeClass("activated");
                                                         $$("#wrapUserNotes > div.bodytext").html(data["content"]);
                                                         
                                                         $$("#wrapUserNotes li.swipeout[data-id='"+data["editid"]+"']").html("").append($$(data["item"]));
@@ -472,11 +472,16 @@ DP.validateForm = function(){
                                             }, 10000);
                                                     }
                                                }else{ 
-                                                   if(whatForm=="checkIsUserLoggedIn"){
-                                                       if(data["success"]==6){
-                                                           displayAlert(data["message"], $$("body"));
-                                                       }
-                                                   }else{
+                                                    if(whatForm=="checkIsUserLoggedIn"){
+                                                        if(data["success"]==6){
+                                                            displayAlert(data["message"], $$("body"));
+                                                        }
+                                                    }else if(whatForm=="frmLoginFEUser"){
+                                                        $$("#splashScreen").addClass("passive basis");
+                                                        displayAlert(data["message"], $$("body"));
+                                                    }
+                                                   
+                                               else{
                                                         displayAlert(data["message"], $$("body"));
                                                     }
                                                }
@@ -587,6 +592,95 @@ $$.fn.detectWithScroll1=function(){
 };
 
 function displayAlert(a, b){
+    var e=arguments[2]?arguments[2]:null;
+    
+    var _delay=1000;
+    
+    var c="<div class='closeOverlay abs right0'><a class='relative' href=''>x</a></div><div class='errContent relative'>" + a + "</div>";
+    var d=$$("<div class='errMessage1 animated abs' />"); 
+    
+    if($$("body > div.errMessage1").length>0){
+        $$("body > div.errMessage1").remove();
+    }
+    
+    b.prepend(d);
+    d.html(c);
+    
+    window.setTimeout(function(){
+        var currentBoxHeight=parseInt($$("body > div.errMessage1").outerHeight());
+        $$("body > div.errMessage1").css({
+              top: -1*currentBoxHeight +"px",
+              opacity: 1
+        });
+        window.setTimeout(function(){
+            $$("body > div.errMessage1").addClass("activated").css({
+                top: 0
+            });
+            
+            window.setTimeout(function(){
+                d.addClass("fadeOut");
+                window.setTimeout(function(){
+                    d.remove();
+                }, 600);
+            }, _delay*5);
+            
+        }, 100);
+    }, 100);
+    
+    $$(document).on("mouseup", function(){
+        d.addClass("fadeOut");
+        window.setTimeout(function(){
+            d.remove();
+        }, 600);
+    });
+    
+}
+
+function displayInfo(a, b){
+    var e=arguments[2]?arguments[2]:null;
+    
+    var _delay=1000;
+    
+    var c="<div class='closeOverlay abs right0'><a class='relative' href=''>x</a></div><div class='successContent relative'>" + a + "</div>";
+    var d=$$("<div class='successMessage1 animated abs' />"); 
+    
+    if($$("body > div.successMessage1").length>0){
+        $$("body > div.successMessage1").remove();
+    }
+    
+    b.prepend(d);
+    d.html(c);
+    
+    window.setTimeout(function(){
+        var currentBoxHeight=parseInt($$("body > div.successMessage1").outerHeight());
+        $$("body > div.successMessage1").css({
+              top: -1*currentBoxHeight +"px",
+              opacity: 1
+        });
+        window.setTimeout(function(){
+            $$("body > div.successMessage1").addClass("activated").css({
+                top: 0
+            });
+            
+            window.setTimeout(function(){
+                d.addClass("fadeOut");
+                window.setTimeout(function(){
+                    d.remove();
+                }, 600);
+            }, _delay*5);
+            
+        }, 100);
+    }, 100);
+    
+    $$(document).on("mouseup", function(){
+        d.addClass("fadeOut");
+        window.setTimeout(function(){
+            d.remove();
+        }, 600);
+    });
+}
+
+function displayAlert_deprecated(a, b){
     var c=arguments[2]?arguments[2]:null;
     myApp.modal({
         text: a,
@@ -605,7 +699,7 @@ function displayAlert(a, b){
     });
 }
 
-function displayInfo(a, b){
+function displayInfo_deprecated(a, b){
     myApp.modal({
         text: a,
         title: 'Success!',
@@ -1085,7 +1179,7 @@ myApp.onPageInit('index', function (page) {
          
         var html=compiledWelcomeTemplate(data);
          
-        $$("div.page.page-on-center div.page-content").html(html);
+       // $$("div.page.page-on-center div.page-content").html(html);
          /*
             mainView.router.load({
                 template: Template7.templates.welcomeTemplate,
