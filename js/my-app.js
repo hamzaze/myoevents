@@ -25,7 +25,8 @@ Template7.registerHelper('if_compare', function (a, operator, b, options) {
 var myApp = new Framework7({
     precompileTemplates: true,
     template7Pages: true, // need to set this
-    cache: false
+    cache: false,
+    fastClicks: false
 });
  
 // If we need to use custom DOM library, let's save it to $$ variable:
