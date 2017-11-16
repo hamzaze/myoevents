@@ -21,7 +21,7 @@
     </platform>
      <platform name="ios">
         <!-- iPhone 6 / 6+ -->
-        <icon src="res/ios/icon/icon-60@3x.png" platform="ios" width="180" height="180" />
+        <icon src="res/ios/icon/Icon-App-60x60@3x.png" platform="ios" width="180" height="180" />
 
         <!-- iPhone / iPod Touch  -->
         <icon src="res/ios/icon/Icon-App-60x60@1x.png" platform="ios" width="60" height="60" />
