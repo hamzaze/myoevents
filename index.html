@@ -147,12 +147,15 @@
                                 <ul class="row">
                                     {{#if results}}
                                         {{#if results.success}}
+                                            {{#if results.multipleevents}}
+                                                <li class="{{results.menulinkclass}} text-center"><a data-action="addedititem" data-context="wrapAllMyEvents" href="#" class="relative bg-darkblue" data-userid="{{results.profile.userid}}"><strong>My Events</strong></a></li>
+                                            {{/if}}    
                                             {{#if results.profile}}
-                                                <li class="col-50 text-center"><a data-target="myprofile" href="me.html" class="relative bg-mf-green" data-context='{{stringify results.profile}}'><strong>EDIT PROFILE</strong></a></li>
+                                                <li class="{{results.menulinkclass}} text-center"><a data-target="myprofile" href="me.html" class="relative bg-mf-green" data-context='{{stringify results.profile}}'><strong>Edit Profile</strong></a></li>
                                             {{/if}}
                                         {{/if}}
                                     {{/if}}        
-                                    <li class="col-50 text-center"><a href="#" data-action="addedititem" data-context="logoutFEUser" class="relative bg-warning"><strong>LOGOUT</strong></a></li>
+                                    <li class="{{results.menulinkclass}} text-center"><a href="#" data-action="addedititem" data-context="logoutFEUser" class="relative bg-warning"><strong>Logout</strong></a></li>
                                     <div class="noFloat"></div>
                                 </ul>
                             </nav>

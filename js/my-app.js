@@ -42,7 +42,7 @@ var isAjaxLoaded=false;
 var isAjaxLoadedLoop=false;
 var pathToAjaxDispatcher="http://www.myoevents.com/myevents/php/ajaxDispatcher1.php";
 var reloadDiscussionEvery=15000;
-var autoloadWelcomeTemplateEvery=1000*60*(3/3);
+var autoloadWelcomeTemplateEvery=1000*60*3;
 
 var akaLocalStorageWelcomeTemplate=null;
 
@@ -1099,7 +1099,7 @@ $$(document).on("click", "a[data-action='addedititem']", function(e){
                         window.setTimeout(function(){
                                 $$("#topHeader div.refreshPoll").removeClass("fadeInRight").addClass("fadeOutRight");
                         }, 10000);
-                    }else if(postData["context"]=="wrapEventWelcomePage"){
+                    }else if(postData["context"]=="wrapEventWelcomePage" || postData["context"]=="wrapAllMyEvents"){
                         setCookie("hhUserLoggedInWhatEvent", data["id"], 7);
                         var currentPage=mainView.activePage.name;
                        

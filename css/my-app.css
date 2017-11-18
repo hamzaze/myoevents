@@ -767,7 +767,11 @@ h1.small{
     transition: all 0.3s ease-out 0s;
     -moz-transition: all 0.3s ease-out 0s;
     -webkit-transition: all 0.3s ease-out 0s;
-    margin-top: -38px;
+    margin-top: -50px;
+}
+
+.topHeader nav#menu.navbar:after{
+    display: none;
 }
 
 .topHeader nav#menu.activated{
@@ -788,10 +792,14 @@ h1.small{
     width: 50%;
 }
 
+.topHeader nav#menu ul > li.col-33{
+    width: 33.3333%;
+}
+
 .topHeader nav#menu ul > li > a.relative{
-    padding: 10px;
+    padding: 14px 1px;
     font-weight: 100;
-    font-size: 0.8rem;
+    font-size: 1rem;
     color: #fff;
 }
 
