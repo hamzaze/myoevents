@@ -63,6 +63,7 @@
     <preference name="target-device" value="handset" />
     <preference name="deployment-target" value="8.0" />
     <preference name="DisallowOverscroll" value="true"/>
+    <plugin name="phonegap-plugin-push" spec="2.0.0" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
     <plugin name="cordova-plugin-camera" source="npm" >
       <variable name="CAMERA_USAGE_DESCRIPTION" value="Allow the app to use your camera" />
