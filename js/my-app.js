@@ -66,18 +66,21 @@ var photoNavbarTemplate='<div class="navbar"> \
 </div>';
 
 
-var push = PushNotification.init({ "android": {"senderID": "931972740218"}} );
-push.on('registration', function(data) {
-alert(data.registrationId);
-});
+document.addEventListener("deviceready",onDeviceReady,false);
+function onDeviceReady() {
+    var push = PushNotification.init({ "android": {"senderID": "931972740218"}} );
+    push.on('registration', function(data) {
+    alert(data.registrationId);
+    });
 
-push.on('notification', function(data) {
-alert(data.title+" Message: " +data.message);
-});
+    push.on('notification', function(data) {
+    alert(data.title+" Message: " +data.message);
+    });
 
-push.on('error', function(e) {
-alert(e);
+    push.on('error', function(e) {
+    alert(e);
 });
+}
 
 
 if(!checkCookie()){
