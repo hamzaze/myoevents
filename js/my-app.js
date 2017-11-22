@@ -134,6 +134,15 @@ $$.fn.checkFields = function(){
             };	  
             return vl.runCheck(formName);
         break;
+        case "frmResetPassword":    
+            var vl = new DP.validateForm();
+            vl.valSetting = {fields : [
+                    {id : "aEOE_password", val : "", msg : "Type a valid password", type : "password"},
+                    {id : "aEOE_passwordagain", val : "", msg : "Type a valid password", type : "password"}
+                    ]
+            };	  
+            return vl.runCheck(formName);
+        break;
         case "frmForgotPassword":    
             var vl = new DP.validateForm();
             vl.valSetting = {fields : [
@@ -265,7 +274,7 @@ DP.validateForm = function(){
         for (i=0;i<this.valSetting.fields.length;i++){
 			var fName=this.valSetting.fields[i].id;
 			var fVal=this.valSetting.fields[i].val;
-			var fieldName=$$("#"+whatForm).find("[name='" + this.valSetting.fields[i].id + "']");
+			var fieldName=$$("#"+whatForm+" [name='" + this.valSetting.fields[i].id + "']");
                         var fMessage=this.valSetting.fields[i].msg==""?fieldName.closest("div").find("label").text():this.valSetting.fields[i].msg;
             
             if(this.valSetting.fields[i].type == "zip"){
@@ -322,7 +331,7 @@ DP.validateForm = function(){
                 }
 				else{
                                     if(fName=='aEOE_passwordagain'){
-                                        if(fieldName.val()!=$$("input[name='aEOE_password']").val()) createAlert(fieldName, "Passwords must match.");
+                                        if(fieldName.val()!=$$("#"+whatForm+ " [name='aEOE_password']").val()) createAlert(fieldName, "Passwords must match.");
                                         else{
                                            removeAlert(fieldName);
                                             countTrueFilled++; 
@@ -385,8 +394,32 @@ DP.validateForm = function(){
                                                 resetForm($$("#"+whatForm));
                                             }
                                                if(data["success"]==1){
+                                                   if(whatForm=="frmResetPassword"){
+                                                       displayInfo(data["message"], $$("body"));
+                                                       window.setTimeout(function(){
+                                                            window.location.reload();
+                                                        }, 1000);
+                                                   }
+                                                   
                                                     if(whatForm=="frmLoginFEUser"){
                                                         
+                                                        //Check is password updated once
+                                if(data["results"]["profile"]["ispasswordupdated"]==0){
+                                    
+                                    setCookie("hhUserLoggedInApp", data["token"], 7);
+                                    
+                                    mainView.router.load({
+                                        template: Template7.templates.updatePasswordTemplate,
+                                        animatePages: false,
+                                        reload: false,
+                                        context: data
+                                    });
+                                    
+                                    $$("#splashScreen").addClass("passive");
+                                    window.setTimeout(function(){
+                                        $$("#splashScreen").addClass("basis");
+                                    }, 1000);
+                                }else{
                                                         if(data["results"]["eventlogo"]){
                                                             $$("#splashScreen div[data-target='replacewithsplashlogo']").html("").append($$(data["results"]["eventlogo"]));
                                                             $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
@@ -414,7 +447,7 @@ DP.validateForm = function(){
                                                                 }, 1000);
                                                         }
                                                         
-                                                        
+                                                   }
                                                         if(!data["results"]["profilephoto"]){
                                                             window.setTimeout(function(){
                                                                 myApp.popover('.popover-ifnoprofilephoto', $$("#preview"), true);
@@ -456,7 +489,8 @@ DP.validateForm = function(){
                                                         //alert("request succeed!");
                                                         $$("#wrapPieChart").attr("data-countoptions", data["countoptions"]);
                                                         $$("#wrapPieChart #myChart").html("");
-                                                        $$("#wrapPieChart").find("div.pieChartTextIntro").find("div.text-primary").html("n="+data["countusersvoted"]);
+                                                        $$("#wrapPieChart").find("div.pieChartTextIntro").addClass("hidden");
+                                                        $$("#wrapPieChart").find("div[data-target='wrapcountchartvotes']").html("n="+data["countusersvoted"]);
                                                         $$("[data-target='polloptions']").attr("data-countoptions", data["countoptions"]).html(data["content"]);
                                                         drawPieChart(data["results"], $$("#wrapPieChart #myChart")[0].getContext("2d"));
                                                         window.setTimeout(function(){
@@ -471,6 +505,10 @@ DP.validateForm = function(){
                                             window.setTimeout(function(){
                                                     $$("#topHeader div.refreshPoll").removeClass("fadeOutRight").addClass("fadeInRight");
                                             }, 10000);
+                                                    }else if(whatForm=="frmAddNewLivePoll"){
+                                                        resetForm($$("#"+whatForm));
+                                                        $$("a[data-context='wrapAddNewLivePoll']").trigger("click");
+                                                         $$("#wrapLivePollRecords div[data-target='livepolllist']").append($$(data["content"]));
                                                     }
                                                }else{ 
                                                     if(whatForm=="checkIsUserLoggedIn"){
@@ -861,7 +899,9 @@ $$(document).on("click", "a[data-action='toggleform']", function(e){
 $$(document).on("click", "a[data-action='back']", function(e){
     e.preventDefault();
     var $this=$$(this);
+    
     var templateName=$this.attr("data-templatename");
+    localStorage.setItem(templateName, JSON.stringify(data));
     if(localStorage.getItem(templateName)===null){
         mainView.router.load({
             template: Template7.templates.loginTemplate,
@@ -870,6 +910,7 @@ $$(document).on("click", "a[data-action='back']", function(e){
         });
     }else{
         var data=JSON.parse(localStorage.getItem(templateName));
+        
         mainView.router.load({
             template: Template7.templates.welcomeTemplate,
             animatePages: true,
@@ -994,7 +1035,7 @@ $$(document).on("click","a.swipeout-nodelete", function(e){
 });
 
 
-$$(document).on("click", "a[data-action='addedititem']", function(e){
+$$(document).on("click", "[data-action='addedititem']", function(e){
     e.preventDefault();
     var $this=$$(this);
     
@@ -1003,6 +1044,12 @@ $$(document).on("click", "a[data-action='addedititem']", function(e){
             displayPromptForUserNote($this);
             return false;
         }
+    }
+    
+    if($this.attr("data-context")=="wrapAddNewLivePoll"){
+        $$("#wrapLivePollRecords").toggleClass("hidden");
+        $$("#wrapLivePollAddNew").toggleClass("hidden");
+        return false;
     }
     
     $this.closest(".flip-container").addClass("hover");
@@ -1083,6 +1130,11 @@ $$(document).on("click", "a[data-action='addedititem']", function(e){
                         $$("#wrapUserNotes > ul").prepend($$(data["content"]));
                     }else if(postData["context"]=="sendUserNoteToUserMail"){
                         displayInfo(data["message"], $$("body"));
+                    }else if(postData["context"]=="skipPasswordUpdate"){
+                        displayInfo(data["message"], $$("body"));
+                        window.setTimeout(function(){
+                            window.location.reload();
+                        }, 1000);
                     }else if(postData["context"]=="voteOnQuestion"){
                         displayInfo(data["message"], $$("body"));
                         $$("#wrapAgendaQuestions div[data-target='questionlist']").html(data["content"]);
@@ -1090,7 +1142,8 @@ $$(document).on("click", "a[data-action='addedititem']", function(e){
                         $this.removeClass("spinner");
                         $$("#wrapPieChart").attr("data-countoptions", data["countoptions"]);
                         $$("#wrapPieChart #myChart").html("");
-                   $$("#wrapPieChart").find("div.pieChartTextIntro").find("div.text-primary").html("n="+data["countusersvoted"]);
+                        $$("#wrapPieChart").find("div.pieChartTextIntro").addClass("hidden");
+                   $$("#wrapPieChart").find("div[data-target='wrapcountchartvotes']").html("n="+data["countusersvoted"]);
                    $$("[data-target='polloptions']").attr("data-countoptions", data["countoptions"]).html(data["content"]);
                    drawPieChart(data["results"], $$("#wrapPieChart #myChart")[0].getContext("2d"));
                    window.setTimeout(function(){
@@ -1165,7 +1218,7 @@ myApp.onPageAfterBack('index', function(page){
 
 myApp.onPageInit('index', function (page) {
     if($$("div.page.page-on-center div.page-content > #wrapWelcomeBlocks").length>0){
-          console.log("wrapWelcomeBlocks");
+          console.log("wrapWelcomeBlocks should be updated right now");
           
           
         if(akaLocalStorageWelcomeTemplate!==null){
@@ -1173,14 +1226,24 @@ myApp.onPageInit('index', function (page) {
         }else{
             var data=JSON.parse(localStorage.getItem('welcomeTemplate'));
         }
-         
+        
+        console.log(data);
+        /*
+        mainView.router.load({
+            template: Template7.templates.welcomeTemplate,
+            animatePages: false,
+            reload: false,
+            context: data
+        });
+         */
         var welcomeTemplate = $$('#welcomeTemplate').html();
         // compile it with Template7
         var compiledWelcomeTemplate = Template7.compile(welcomeTemplate);
          
         var html=compiledWelcomeTemplate(data);
          
-       // $$("div.page.page-on-center div.page-content").html(html);
+        //$$("div.page.page-on-center div.page-content").html(html);
+        $$("div.page.page-on-center[data-page='index']").html(html);
          /*
             mainView.router.load({
                 template: Template7.templates.welcomeTemplate,
@@ -1393,19 +1456,30 @@ function checkIsUserStillLoggedIn(token){
                         if(currentPage=="index"){
                              if(localStorage.getItem('welcomeTemplate')!==null){
                                 
-                                if(data["results"]["eventlogo"]){
-                                    $$("#splashScreen div[data-target='replacewithsplashlogo']").html("").append($$(data["results"]["eventlogo"]));
-                                    $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
-                                }
-                                 
-                                 
-                                 var data=JSON.parse(localStorage.getItem('welcomeTemplate'));
-                                 mainView.router.load({
-                                     template: Template7.templates.welcomeTemplate,
-                                     animatePages: false,
-                                     reload: false,
-                                     context: data
-                                 });
+                                //Check is password updated once
+                                if(data["results"]["profile"]["ispasswordupdated"]==0){
+                                    mainView.router.load({
+                                        template: Template7.templates.updatePasswordTemplate,
+                                        animatePages: false,
+                                        reload: false,
+                                        context: data
+                                    });
+                                }else{
+                                
+                                    if(data["results"]["eventlogo"]){
+                                        $$("#splashScreen div[data-target='replacewithsplashlogo']").html("").append($$(data["results"]["eventlogo"]));
+                                        $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
+                                    }
+
+
+                                     var data=JSON.parse(localStorage.getItem('welcomeTemplate'));
+                                     mainView.router.load({
+                                         template: Template7.templates.welcomeTemplate,
+                                         animatePages: false,
+                                         reload: false,
+                                         context: data
+                                     });
+                                 }
                              }else{
                                  mainView.router.load({
                                      template: Template7.templates.loginTemplate,
@@ -1413,7 +1487,7 @@ function checkIsUserStillLoggedIn(token){
                                      reload: false
                                  });
                              }
-                             if(data["results"]["eventlogo"]){
+                             if(data["results"]["eventlogo"] && data["results"]["profile"]["ispasswordupdated"]==1){
                                 window.setTimeout(function(){
                                    $$("#splashScreen").addClass("passive");
                                     window.setTimeout(function(){
@@ -1434,12 +1508,23 @@ function checkIsUserStillLoggedIn(token){
                         if(currentPage=="index"){
                              if(localStorage.getItem('listEvents')!==null){
                                  var data=JSON.parse(localStorage.getItem('listEvents'));
-                                 mainView.router.load({
-                                     template: Template7.templates.listEvents,
-                                     animatePages: false,
-                                     reload: false,
-                                     context: data
-                                 });
+                                 
+                                //Check is password updated once
+                                if(data["results"]["profile"]["ispasswordupdated"]==0){
+                                    mainView.router.load({
+                                        template: Template7.templates.updatePasswordTemplate,
+                                        animatePages: false,
+                                        reload: false,
+                                        context: data
+                                    });
+                                }else{
+                                    mainView.router.load({
+                                        template: Template7.templates.listEvents,
+                                        animatePages: false,
+                                        reload: false,
+                                        context: data
+                                    });
+                                }
                              }else{
                                  mainView.router.load({
                                      template: Template7.templates.loginTemplate,
@@ -1487,21 +1572,41 @@ function autoLoadWelcomeTemplate(){
                    console.log("It is updating welcomeTemplate localStorage now.");
                    localStorage.setItem('welcomeTemplate', JSON.stringify(data));
                    akaLocalStorageWelcomeTemplate=JSON.stringify(data);
-            if(currentPageName=='index'){       
-                if($$("div.page.page-on-center div.page-content > #wrapWelcomeBlocks").length>0){
-                    console.log("wrapWelcomeBlocks");
+            if(currentPageName=='index'){
+                //Check is password updated once
+                if(data["results"]["profile"]["ispasswordupdated"]==0){
 
-                    if(akaLocalStorageWelcomeTemplate!==null){
-                      var data=JSON.parse(akaLocalStorageWelcomeTemplate);
-                    }else{
-                        var data=JSON.parse(localStorage.getItem('welcomeTemplate'));
-                    }
-                      mainView.router.load({
-                          template: Template7.templates.welcomeTemplate,
-                          animatePages: false,
-                          reload: true,
-                          context: data
-                      });
+                    setCookie("hhUserLoggedInApp", data["token"], 7);
+
+                    mainView.router.load({
+                        template: Template7.templates.updatePasswordTemplate,
+                        animatePages: false,
+                        reload: false,
+                        context: data
+                    });
+
+                    $$("#splashScreen").addClass("passive");
+                    window.setTimeout(function(){
+                        $$("#splashScreen").addClass("basis");
+                    }, 1000);
+                }else{
+                
+                
+                    if($$("div.page.page-on-center div.page-content > #wrapWelcomeBlocks").length>0){
+                        console.log("wrapWelcomeBlocks should be updated");
+
+                        if(akaLocalStorageWelcomeTemplate!==null){
+                          var data=JSON.parse(akaLocalStorageWelcomeTemplate);
+                        }else{
+                            var data=JSON.parse(localStorage.getItem('welcomeTemplate'));
+                        }
+                          mainView.router.load({
+                              template: Template7.templates.welcomeTemplate,
+                              animatePages: false,
+                              reload: true,
+                              context: data
+                          });
+                        }
                     }
                  }
                }
@@ -1623,8 +1728,8 @@ function autoLoadCurrentPoll(id){
                    if(data["answered"]>0){
                        $$("#wrapPieChart").attr("data-countoptions", data["countoptions"]);
                         $$("#wrapPieChart #myChart").html("");
-
-                        $$("#wrapPieChart").find("div.pieChartTextIntro").find("div.text-primary").html("n="+data["countusersvoted"]);
+                        $$("#wrapPieChart").find("div.pieChartTextIntro").addClass("hidden");
+                        $$("#wrapPieChart").find("div[data-target='wrapcountchartvotes']").html("n="+data["countusersvoted"]);
                         
                         drawPieChart(data["results"], $$("#wrapPieChart #myChart")[0].getContext("2d"));
                         

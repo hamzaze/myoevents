@@ -400,6 +400,18 @@ button{
     color: #0d5180;
 }
 
+.btn-green{
+    background-color: #9aca41;
+    border-color: #9aca41;
+    color: #fff;
+}
+
+.btn-danger{
+    background-color: #e94937;
+    border-color: #e94937;
+    color: #fff;
+}
+
 
 #frmLoginFEUser ::-webkit-input-placeholder, #frmForgotPassword ::-webkit-input-placeholder, #frmResetPasswordFEUser ::-webkit-input-placeholder{
     color: #fff;
@@ -489,7 +501,7 @@ input.mf-input{
     font-size: 80%;
 }
 
-.loginBlock .fRow > button, button.akalogin{
+.loginBlock .fRow > button, button.akalogin, .loginBlock .fRow > div.inline-block > button, .wrapQuestion .fRow > button{
     border-radius: 0;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
@@ -680,7 +692,7 @@ h1.small{
 }
 
 .text-orange{
-    color: #ff0;
+    color: #fc0;
 }
 
 .text-blue{
@@ -729,6 +741,11 @@ h1.small{
 .paddLeftRight20{
     padding-left: 20px;
     padding-right: 20px;
+}
+
+.paddLeftRight10{
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .paddTopBottom10{
@@ -1103,9 +1120,20 @@ div.wrapAttractions div.item{
     margin-bottom: 10px;
 }
 
+div#wrapSponsors.wrapAttractions div.item{
+    height: auto;
+    background-color: transparent;
+    margin-bottom: 30px;
+}
+
+div#wrapSponsors.wrapAttractions div.item img.responsive-img{
+    width: 250px;
+    max-width: 100%;
+}
+
 div#wrapPolls.wrapAttractions div.item{
-    background-color: #fff; 
-    color: #243849;
+    background-color: #e94937; 
+    color: #fff;
 }
 
 div#wrapPolls.wrapAttractions div.item[data-answered="1"]{
@@ -1186,14 +1214,14 @@ div.wrapAgendaDetails div.image-holder{
 }
 
 div#wrapAgendas.wrapAttractions div.item div.wrapTime{
-    width: 60px;
+    width: 70px;
     height: calc(100% + 1px);
     position: absolute;
     left: 0;
     top: 0;
     background-color: #2c6c96;
     color: #fff;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 600;
 }
 
@@ -1243,8 +1271,8 @@ div.wrapPieChart[data-countoptions="5"] [data-target="piechart"]{
 }
 
 div.pieChartTextIntro{
-    padding: 0 0 0.5rem;
-    font-size: 80%;
+    bottom: 30%;
+    width: 100%;
 }
 
 div.wrapPercents{
@@ -1477,12 +1505,20 @@ div#wrapAgendas.wrapAttractions div.item{
 }
 
 div#wrapAgendas.wrapAttractions div.item.hasSpeaker{
-    background-color: #6abe96;
     color: #fff;
+}
+
+div#wrapAgendas.wrapAttractions div.item.hasHighlight{
+    background-color: #6abe96;
 }
 
 div#wrapAgendas.wrapAttractions div.item div.flex1 i.abs{
     color: #fff;
+    display: none;
+}
+
+div#wrapAgendas.wrapAttractions div.item.hasLink div.flex1 i.abs, div#wrapAgendas.wrapAttractions div.item.hasSpeaker div.flex1 i.abs{
+    display: block;
 }
 
 div#wrapAgendas.wrapAttractions div.item.hasLink div.flex1 i.abs{
@@ -1490,13 +1526,13 @@ div#wrapAgendas.wrapAttractions div.item.hasLink div.flex1 i.abs{
 }
 
 div#wrapAgendas.wrapAttractions div.item .flex1{
-    padding-left: 80px;
+    padding-left: 90px;
     padding-top: 10px;
     padding-bottom: 10px;
 }
 
 .text-muted{
-    color: #ccc;
+    color: #999;
 }
 
 /*
@@ -1681,7 +1717,7 @@ div#wrapPolls.wrapAttractions h3.bg-image, div#wrapDiscussionPosts.wrapAttractio
 }
 
 div#wrapDiscussionPosts.wrapAttractions h3.bg-image{
-    background-image: url("../images/messagefromCEO.png");
+    background-image: url("../images/ceo.png");
 }
 
 div#wrapPolls.wrapAttractions div.wrapQuestion{
@@ -1762,7 +1798,7 @@ div#wrapAttendees.wrapAttractions div.item h3{
 }
 
 div#wrapFiles.wrapAttractions div.item h3, div#wrapUserNotes.wrapAttractions div.item h3, div#wrapAgendas.wrapAttractions div.item h3{
-    font-weight: 600;
+    font-weight: 400;
     font-size: 1.1rem;
     line-height: 100%;
 }

@@ -13,8 +13,10 @@
                 <div class="personalBlock text-center text-white">
                     <div class="box effect2">
                         <h2>{{description}}</h2>
-                        <p><i class="fa fa-map-marker" aria-hidden="true"></i> {{name}}</p>
-                        <p>{{dlongdate}} {{stimeA}} to {{etimeA}}</p>
+                        {{if name}}
+                            <p><i class="fa fa-map-marker" aria-hidden="true"></i> {{name}}</p>
+                        {{/if}}
+                        <p>{{stimeA}} to {{etimeA}}</p>
                     </div>
                 </div>
                 <div>
@@ -51,6 +53,7 @@
                                 </a>
                             {{/if}}
                         {{/if}}
+                        {{#if notes}}
                         <a href="#" data-action="addedititem" data-context="wrapCustomPage" data-id="9" data-eventid="{{eventid}}">
                             <div class="item bg-white text-blue text-left">
                                 <div class="flexbox">
@@ -59,6 +62,7 @@
                                 </div>
                             </div>
                         </a>
+                        {{/if}}
                     </div>
                     {{/if}}
                 </div>
