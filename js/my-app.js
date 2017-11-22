@@ -66,12 +66,15 @@ var photoNavbarTemplate='<div class="navbar"> \
 </div>';
 
 
-
-PushNotification.init({
-android: {
-        senderID: 931972740218
+document.addEventListener("deviceready",onDeviceReady,false);
+function onDeviceReady() {
+    console.log("device is ready");
+    PushNotification.init({
+    android: {
+        senderID: 956432534015
     }
 });
+}
 
 
 if(!checkCookie()){
