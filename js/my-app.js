@@ -1873,9 +1873,7 @@ function removeActionLoader(){
 
 function setupPush() {
    var push = PushNotification.init({
-       "android": {
-           "senderID": "931972740218"
-       },
+       "android": {},
        "ios": {
          "sound": true,
          "alert": true,
