@@ -11,7 +11,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
   <icon src="icon.png"/>
-  <platform name="android" debuggable="true">
+  <platform name="android">
         <icon src="res/android/mipmap-ldpi/ic_launcher.png" density="ldpi" />
         <icon src="res/android/mipmap-mdpi/ic_launcher.png" density="mdpi" />
         <icon src="res/android/mipmap-hdpi/ic_launcher.png" density="hdpi" />
