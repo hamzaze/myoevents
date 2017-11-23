@@ -1,20 +1,3 @@
-document.addEventListener("deviceready", OnDeviceReady, false);
-
-function OnDeviceReady()    {
-    var push = PushNotification.init({
-      android: {},
-      browser: {
-        pushServiceURL: 'http://push.api.phonegap.com/v1/push'
-      },
-      ios: {
-	alert: "true",
-	badge: true,
-	sound: 'false'
-      },
-      windows: {}
-});
-}
-
 Template7.registerHelper('stringify', function (context){
     var str = JSON.stringify(context);
     // Need to replace any single quotes in the data with the HTML char to avoid string being cut short
@@ -82,19 +65,6 @@ var photoNavbarTemplate='<div class="navbar"> \
     </div> \
 </div>';
 
-
-
-/*
-document.addEventListener("deviceready",onDeviceReady,false);
-function onDeviceReady() {
-    alert("Device Ready");
-    PushNotification.init({
-    android: {
-        senderID: 956432534015
-    }
-});
-}
-*/
 
 if(!checkCookie()){
     mainView.router.load({
@@ -1827,6 +1797,11 @@ function autoLoadCurrentDiscussion(id, isAjaxLoader){
     });
 }
 
+$$(document).on('deviceready', function deviceIsReady() {
+   console.log('Device is ready!');
+   setupPush();
+ });
+
 
 function wrapProgressBar1(){
     // progressbar.js@1.0.0 version is used
@@ -1895,3 +1870,31 @@ function removeActionLoader(){
         $$("body > div.overlayWhite").remove();
     }, 800);
 }
+
+function setupPush() {
+   var push = PushNotification.init({
+       "android": {
+           "senderID": "931972740218"
+       },
+       "ios": {
+         "sound": true,
+         "alert": true,
+         "badge": true
+       },
+       "windows": {}
+   });
+
+   push.on('registration', function(data) {
+       console.log("registration event: " + data.registrationId);
+       var oldRegId = localStorage.getItem('registrationId');
+       if (oldRegId !== data.registrationId) {
+           // Save new registration ID
+           localStorage.setItem('registrationId', data.registrationId);
+           // Post registrationId to your app server as the value has changed
+       }
+   });
+
+   push.on('error', function(e) {
+       console.log("push error = " + e.message);
+   });
+ }
