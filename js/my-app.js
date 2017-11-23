@@ -67,6 +67,7 @@ var photoNavbarTemplate='<div class="navbar"> \
 
 $$(document).on('deviceready', function(){
    console.log('Device is ready!');
+   console.log(navigator.notification);
    setupPush();
  });
 
