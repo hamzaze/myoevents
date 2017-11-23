@@ -1,3 +1,9 @@
+document.addEventListener("deviceready", OnDeviceReady, false);
+
+function OnDeviceReady()    {
+alert("Device is ready");
+}
+
 Template7.registerHelper('stringify', function (context){
     var str = JSON.stringify(context);
     // Need to replace any single quotes in the data with the HTML char to avoid string being cut short
@@ -66,6 +72,8 @@ var photoNavbarTemplate='<div class="navbar"> \
 </div>';
 
 
+
+/*
 document.addEventListener("deviceready",onDeviceReady,false);
 function onDeviceReady() {
     alert("Device Ready");
@@ -75,7 +83,7 @@ function onDeviceReady() {
     }
 });
 }
-
+*/
 
 if(!checkCookie()){
     mainView.router.load({
