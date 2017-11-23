@@ -65,6 +65,10 @@ var photoNavbarTemplate='<div class="navbar"> \
     </div> \
 </div>';
 
+$$(document).on('deviceready', function(){
+   console.log('Device is ready!');
+   setupPush();
+ });
 
 if(!checkCookie()){
     mainView.router.load({
@@ -1796,11 +1800,6 @@ function autoLoadCurrentDiscussion(id, isAjaxLoader){
        }
     });
 }
-
-$$(document).on('deviceready', function deviceIsReady() {
-   console.log('Device is ready!');
-   setupPush();
- });
 
 
 function wrapProgressBar1(){
