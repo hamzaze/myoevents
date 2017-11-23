@@ -1896,4 +1896,15 @@ function setupPush() {
    push.on('error', function(e) {
        console.log("push error = " + e.message);
    });
+   
+   push.on('notification', function(data) {
+         console.log('notification event');
+         navigator.notification.alert(
+             data.message,         // message
+             null,                 // callback
+             data.title,           // title
+             'Ok'                  // buttonName
+         );
+     });
+   
  }
