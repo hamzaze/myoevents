@@ -11,10 +11,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
   <icon src="icon.png"/>
-  <config-file platform="android" parent="/manifest" mode="merge">
-    <application android:debuggable="true"/>
-</config-file>
-  <platform name="android">
+  <platform name="android" debuggable="true">
         <icon src="res/android/mipmap-ldpi/ic_launcher.png" density="ldpi" />
         <icon src="res/android/mipmap-mdpi/ic_launcher.png" density="mdpi" />
         <icon src="res/android/mipmap-hdpi/ic_launcher.png" density="hdpi" />
