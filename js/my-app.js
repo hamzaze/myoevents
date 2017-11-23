@@ -68,7 +68,7 @@ var photoNavbarTemplate='<div class="navbar"> \
 
 document.addEventListener("deviceready",onDeviceReady,false);
 function onDeviceReady() {
-    console.log("device is ready");
+    alert("Device Ready");
     PushNotification.init({
     android: {
         senderID: 956432534015
