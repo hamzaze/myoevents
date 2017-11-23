@@ -1,7 +1,18 @@
 document.addEventListener("deviceready", OnDeviceReady, false);
 
 function OnDeviceReady()    {
-alert("Device is ready");
+    var push = PushNotification.init({
+      android: {},
+      browser: {
+        pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+      },
+      ios: {
+	alert: "true",
+	badge: true,
+	sound: 'false'
+      },
+      windows: {}
+});
 }
 
 Template7.registerHelper('stringify', function (context){
