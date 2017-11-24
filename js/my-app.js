@@ -67,8 +67,7 @@ var photoNavbarTemplate='<div class="navbar"> \
 
 $$(document).on('deviceready', function(){
    console.log('Device is ready!');
-   console.log(navigator.notification);
-   setupPush();
+   setupPushInit();
  });
 
 if(!checkCookie()){
@@ -425,6 +424,12 @@ DP.validateForm = function(){
                                         $$("#splashScreen").addClass("basis");
                                     }, 1000);
                                 }else{
+                                    
+                                    if(data["results"]["eventname"]){
+                                        //Send registration ID + Event ID pair for push notifications
+                                        setupPush(data["id"]);
+                                    }
+                                    
                                                         if(data["results"]["eventlogo"]){
                                                             $$("#splashScreen div[data-target='replacewithsplashlogo']").html("").append($$(data["results"]["eventlogo"]));
                                                             $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
@@ -1163,6 +1168,11 @@ $$(document).on("click", "[data-action='addedititem']", function(e){
                        
                         if(currentPage=="index"){
                             
+                            if(data["results"]["eventname"]){
+                                        //Send registration ID + Event ID pair for push notifications
+                                        setupPush(data["id"]);
+                                    }
+                            
                             if(data["results"]["eventlogo"]){
                                     $$("#splashScreen div[data-target='replacewithsplashlogo']").html("").append($$(data["results"]["eventlogo"]));
                                     $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
@@ -1507,6 +1517,10 @@ function checkIsUserStillLoggedIn(token){
                             }
 
                         }
+                        
+                        //Send registration ID + Event ID pair for push notifications
+                        setupPush(data["id"]);
+                        
                     }else{
                         localStorage.setItem('listEvents', JSON.stringify(data));
                         var currentPage=mainView.activePage.name;
@@ -1595,7 +1609,10 @@ function autoLoadWelcomeTemplate(){
                         $$("#splashScreen").addClass("basis");
                     }, 1000);
                 }else{
-                
+                    if(data["results"]["eventname"]){
+                                        //Send registration ID + Event ID pair for push notifications
+                                        setupPush(data["id"]);
+                                    }
                 
                     if($$("div.page.page-on-center div.page-content > #wrapWelcomeBlocks").length>0){
                         console.log("wrapWelcomeBlocks should be updated");
@@ -1871,7 +1888,33 @@ function removeActionLoader(){
     }, 800);
 }
 
-function setupPush() {
+function setupPushInit(){
+    var push = PushNotification.init({
+       "android": {},
+       "ios": {
+         "sound": true,
+         "alert": true,
+         "badge": true
+       },
+       "windows": {}
+   });
+   
+   push.on('error', function(e) {
+       console.log("push error = " + e.message);
+   });
+   
+   push.on('notification', function(data) {
+         console.log('notification event');
+         navigator.notification.alert(
+             data.message,         // message
+             null,                 // callback
+             data.title,           // title
+             'Ok'                  // buttonName
+         );
+     });
+}
+
+function setupPush(eventid) {
    var push = PushNotification.init({
        "android": {},
        "ios": {
@@ -1883,6 +1926,7 @@ function setupPush() {
    });
 
    push.on('registration', function(data) {
+       console.log("event ID: " + eventid);
        console.log("registration event: " + data.registrationId);
        var oldRegId = localStorage.getItem('registrationId');
        if (oldRegId !== data.registrationId) {
@@ -1890,6 +1934,22 @@ function setupPush() {
            localStorage.setItem('registrationId', data.registrationId);
            // Post registrationId to your app server as the value has changed
        }
+       var newRegID=localStorage.getItem('registrationId');
+       var postData={context: "sendRegisterEventForPushNotifications", eventid: eventid, senderid: newRegID, oldsenderid: oldRegId};
+       $$.ajax({
+       type: "POST",
+       url: pathToAjaxDispatcher,
+       data: postData,
+       dataType: "json",
+       success: function(data){
+           isAjaxLoaded=false;
+               if(data["success"]==1){
+                   console.log("Success: " + eventid + " " + newRegID);
+               }else{
+                   console.log("failure");
+               }
+           }
+       });
    });
 
    push.on('error', function(e) {
