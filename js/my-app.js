@@ -156,6 +156,16 @@ $$.fn.checkFields = function(){
             return vl.runCheck(formName);
         break;
         
+        case "frmAddNewLivePoll":
+            var vl = new DP.validateForm();
+            vl.valSetting = {fields : [
+                   {id : "aEOE_name", val : "", msg : "Type your question here", type : ""},
+                   {id : "aEOE_option1", val : "", msg : "Option A", type : ""},
+                   {id : "aEOE_option2", val : "", msg : "Option B", type : ""}
+                    ]
+            };	
+        break;
+        
         case "frmAddNewPostToTopic":    
             var vl = new DP.validateForm();
             vl.valSetting = {fields : [
