@@ -639,6 +639,10 @@ h1.small{
     color: #fff;
 }
 
+.text-white-transparent{
+    color: rgba(255,255,255, 0.3);
+}
+
 .text-green{
     color: #a7cc46;
 }
@@ -1164,7 +1168,7 @@ div#wrapSurveys.wrapAttractions div.item div.wrapQuestion h3{
     font-size: 1rem;
 }
 
-div#wrapSurveys.wrapAttractions div.item div.wrapQuestion div.list-block{
+div#wrapSurveys.wrapAttractions div.item div.wrapQuestion div.list-block, div.wrapAttractions div.fRow > div.list-block{
     margin: 0;
     padding: 0;
     font-size: 1rem;
@@ -1177,6 +1181,11 @@ div#wrapSurveys.wrapAttractions div.item div.wrapQuestion .list-block .item-inne
     padding-bottom: 0;
     height: auto;
     min-height: 1rem;
+}
+
+.item-inner1{
+    width: 100%;
+    padding-left: 1em;
 }
 
 div#wrapSurveys.wrapAttractions div.item div.wrapQuestion .list-block .item-content{

@@ -36,20 +36,18 @@
                     {{#if questionsandanswers}}
                     <div id="wrapSurveys" class="wrapQuestions wrapAttractions">
                         <div class="socialBlock">
-                            <div class="box effect2">
-                                
+                                <div class="padd20"></div>
                                     {{#each questionsandanswers}}
                                         {{#if answer}}
                                             <div class="item text-center">
                                                 <div class="wrapQuestion">
-                                                    <h3 class="text-green"><strong>{{ord}}.</strong> {{question}}</h3>
-                                                    <p class="text-white">{{answer}}</p>
+                                                    <h3 class="text-white"><strong>{{ord}}.</strong> {{question}}</h3>
+                                                    <p class="text-white-transparent">{{answer}}</p>
                                                 </div>
                                             </div>
                                         {{/if}}
                                     {{/each}}
                                 
-                            </div>
                         </div>
                     </div>
                     {{/if}}

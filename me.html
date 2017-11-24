@@ -68,7 +68,20 @@
                             <div class="fRow">
                                 <div class="flexbox">
                                     <div class="icon" style="background-image: url('images/emailicon.png')"></div>
-                                    <div class="flex1"><input type="email" class="mf-input" name="aEOE_email" value="{{email}}" /></div>
+                                    <div class="flex1"><input type="email" class="mf-input" name="aEOE_email" value="{{email}}" readonly="readonly" /></div>
+                                </div>
+                            </div>
+                            <div class="fRow">
+                                <div class="list-block text-left">
+                                    <label class="label-checkbox item-content">
+                                        <input type="checkbox" class="mf-checkbox" value="1" name="aEOE_isemailshown" {{isemailshown}}/>
+                                        <div class="item-media">
+                                            <i class="icon icon-form-checkbox"></i>
+                                        </div>
+                                        <div class="item-inner1">
+                                            <div class="item-title">Make Email Public</div>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>

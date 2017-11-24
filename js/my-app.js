@@ -1844,7 +1844,7 @@ function AnimateCircle(circle, animatePercentage) {
            window.setTimeout(function(){
                $$("#container").addClass("processing"); 
            circle.text.style.fontSize = '1rem'; 
-           circle.setText("Photo resizing."); 
+           circle.setText("Photo Resizing"); 
            }, 500);
         }else{
             circle.setText(value+"%");
