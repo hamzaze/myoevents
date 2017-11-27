@@ -302,6 +302,10 @@ div.ajaxLoader > .fineloader{
     background: #0a5183;
 }
 
+[data-page="custom"] > .overlayBlue.wrapSponsors{
+    background: #fff;
+}
+
 [data-page="agenda"] > .overlayBlue{
     background: #083350;
 }
@@ -1751,6 +1755,14 @@ div.wrapAttractions div.title > h3{
 div.wrapAttractions div.bodytext{
     border-top: solid 1px #fff;
     margin-top: 10px;
+}
+
+[data-page="custom"] > .overlayBlue.wrapSponsors div.wrapAttractions div.bodytext{
+    border-top: solid 1px #0a5183;
+}
+
+[data-page="custom"] > .overlayBlue.wrapSponsors div.wrapAttractions h3{
+    color: #0a5183;
 }
 
 div#wrapDiscussionPosts.wrapAttractions div.bodytext{

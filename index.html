@@ -297,7 +297,11 @@
                 
                 <script id="customPageTemplate" type="text/template7">
                     <div data-page="custom" class="page">
-                        <div class="overlayBlue">
+                        {{#if sponsors}}
+                            <div class="overlayBlue wrapSponsors">
+                        {{else}}
+                            <div class="overlayBlue">
+                        {{/if}}
                             <div id="topHeader" class="topHeader abs">
                                 <div class="businessConf2 bg-darkblue text-center height44">
                                 {{#if attendees}}
@@ -829,7 +833,6 @@
                                                                                                                         {{/if}}
                                                                                                                     {{/each}}
                                                                                                                         </div>
-                                                                                                                        <div class="padd20"></div>
                                                                                                                 {{/each}} 
                                                                                                              </div>
                                                                                                         </div>

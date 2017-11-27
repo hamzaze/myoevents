@@ -557,6 +557,7 @@ DP.validateForm = function(){
 		}
 		else
 		{
+                    console.log("something should happen.");
                     displayAlert(stringAlert, $$("body"));
                     return false;
 		}
