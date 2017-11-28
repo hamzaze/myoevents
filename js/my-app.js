@@ -66,8 +66,13 @@ var photoNavbarTemplate='<div class="navbar"> \
 </div>';
 
 $$(document).on('deviceready', function(){
-   console.log('Device is ready!');
-   setupPushInit();
+    console.log(navigator.userAgent);
+   if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) { 
+       $$("#wrapAPPOnStoreAndGooglePlay").addClass("hidden");
+        setupPushInit();
+   }else{
+       $$("#wrapAPPOnStoreAndGooglePlay").removeClass("hidden");
+   }
  });
 
 if(!checkCookie()){
