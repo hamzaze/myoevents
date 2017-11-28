@@ -171,6 +171,7 @@ $$.fn.checkFields = function(){
                    {id : "aEOE_option2", val : "", msg : "Option B", type : ""}
                     ]
             };	
+            return vl.runCheck(formName);
         break;
         
         case "frmAddNewPostToTopic":    
@@ -1260,7 +1261,6 @@ myApp.onPageInit('index', function (page) {
             var data=JSON.parse(localStorage.getItem('welcomeTemplate'));
         }
         
-        console.log(data);
         /*
         mainView.router.load({
             template: Template7.templates.welcomeTemplate,
@@ -1933,6 +1933,7 @@ function setupPushInit(){
 }
 
 function setupPush(eventid) {
+    if(isCordovaApp) {
    var push = PushNotification.init({
        "android": {},
        "ios": {
@@ -1983,5 +1984,5 @@ function setupPush(eventid) {
              'Ok'                  // buttonName
          );
      });
-   
+    }
  }
