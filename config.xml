@@ -12,6 +12,7 @@
     <allow-intent href="geo:*" />
   <icon src="icon.png"/>
   <platform name="android">
+        <preference name="SplashScreen" value="splash.png" />
         <splash src="splash.png" />
         <splash src="res/android/mipmap-ldpi/ic_launcher.png" platform="android" qualifier="ldpi" />
         <splash src="res/android/mipmap-mdpi/ic_launcher.png" platform="android" qualifier="mdpi" />
@@ -29,8 +30,8 @@
         <resource-file src="google-services.json" target="google-services.json" />
     </platform>
      <platform name="ios">
-         
-         <splash src="splash.png" />
+        <preference name="SplashScreen" value="splash.png" />  
+        <splash src="splash.png" />
          
         <!-- iPhone 6 / 6+ -->
         <icon src="res/ios/icon/Icon-App-60x60@3x.png" platform="ios" width="180" height="180" />
