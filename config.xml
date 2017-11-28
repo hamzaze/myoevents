@@ -29,6 +29,9 @@
         <resource-file src="google-services.json" target="google-services.json" />
     </platform>
      <platform name="ios">
+         
+         <splash src="splash.png" />
+         
         <!-- iPhone 6 / 6+ -->
         <icon src="res/ios/icon/Icon-App-60x60@3x.png" platform="ios" width="180" height="180" />
 
