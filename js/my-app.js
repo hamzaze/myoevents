@@ -65,9 +65,11 @@ var photoNavbarTemplate='<div class="navbar"> \
     </div> \
 </div>';
 
+var isCordovaApp = document.URL.indexOf('http://') === -1
+  && document.URL.indexOf('https://') === -1;
+
 $$(document).on('deviceready', function(){
-    console.log(navigator.userAgent);
-   if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) { 
+   if(isCordovaApp) { 
        $$("#wrapAPPOnStoreAndGooglePlay").addClass("hidden");
         setupPushInit();
    }else{
