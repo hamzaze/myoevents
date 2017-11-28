@@ -444,7 +444,7 @@ DP.validateForm = function(){
                                     
                                     if(data["results"]["eventname"]){
                                         //Send registration ID + Event ID pair for push notifications
-                                        setupPush(data["id"]);
+                                        setupPush(data["results"]["eventid"]);
                                     }
                                     
                                                         if(data["results"]["eventlogo"]){
