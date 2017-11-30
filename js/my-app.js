@@ -1112,7 +1112,7 @@ $$(document).on("click", "[data-action='addedititem']", function(e){
     if(postData["context"]=="wrapCustomPage"){
         $$(".views").addClass("overflow");
         //$$("#superTransitionEffect").css({"background-color": $this.attr("data-bgcolor")}).addClass("bigCircleForTransition");
-        if(postData["id"]==46){
+        if(postData["id"]==1){
             displayActionLoader();
         }
     }
@@ -1139,12 +1139,12 @@ $$(document).on("click", "[data-action='addedititem']", function(e){
                                      context: data
                                  });
                                  
-                            if(postData["id"]==46){
+                            if(postData["id"]==1){
                                 $$(document).detectWithScroll();
-                            }else if(postData["id"]==44){
+                            }else if(postData["id"]==3){
                                 $$(document).detectWithScroll1();
                             }
-                            if(postData["id"]==46){
+                            if(postData["id"]==1){
                                 removeActionLoader();
                             }
                             
