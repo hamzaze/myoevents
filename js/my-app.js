@@ -44,6 +44,8 @@ var pathToAjaxDispatcher="http://www.myoevents.com/myevents/php/ajaxDispatcher1.
 var reloadDiscussionEvery=15000;
 var autoloadWelcomeTemplateEvery=1000*60*3;
 
+var reloadAgendaFeedbackNotificationsEvery=1000*60*10;
+
 var akaLocalStorageWelcomeTemplate=null;
 
 var discussionLoadInterval;
@@ -424,7 +426,9 @@ DP.validateForm = function(){
                                                    }
                                                    
                                                     if(whatForm=="frmLoginFEUser"){
-                                                        
+                                                    if(data["results"]["eventexpired"]){
+                                                        $$("#splashScreen").addClass("noBackground");
+                                                    }    
                                                         //Check is password updated once
                                 if(data["results"]["profile"]["ispasswordupdated"]==0){
                                     
@@ -442,7 +446,7 @@ DP.validateForm = function(){
                                         $$("#splashScreen").addClass("basis");
                                     }, 1000);
                                 }else{
-                                    
+                                    setCookie("hhUserLoggedInApp", data["token"], 7);
                                     if(data["results"]["eventname"]){
                                         //Send registration ID + Event ID pair for push notifications
                                         setupPush(data["results"]["eventid"]);
@@ -453,8 +457,16 @@ DP.validateForm = function(){
                                                             $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
                                                         }
                                                         
+                                                        if(data["results"]["eventexpired"]){
+                                        $$("#splashScreen div[data-target='replacewithsplashlogo']").append($$(data["results"]["welcometext"]));
+                                        $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
+                                        
+                                        return false;
+                                    }
                                                         
-                                                        setCookie("hhUserLoggedInApp", data["token"], 7);
+                                                        
+                                                        
+                                                        
                                                         localStorage.setItem('welcomeTemplate', JSON.stringify(data));
                                                         mainView.router.load({
                                                             template: Template7.templates.welcomeTemplate,
@@ -893,6 +905,69 @@ function handleWithSurveyForm(form){
     }
 }
 
+function loadProfilePhotos(eventid){
+    if(isAjaxLoaded) return false;
+    isAjaxLoaded=true;
+    var postData={eventid: eventid, context: "loadAttendesProfilePhotos"};
+    
+    
+    $$.ajax({
+       type: "POST",
+       url: pathToAjaxDispatcher,
+       data: postData,
+       dataType: "json",
+       success: function(data){
+           isAjaxLoaded=false;
+               if(data["success"]==1){
+                   var reImage=/"image":"(.+|\s?)"/;
+                   $$.each(data["results"], function (index, value) {
+                       var oldContext=$$("#wrapAttendees img.circle[data-id='"+index+"']").attr("src", value).addClass("completed").closest("a.loadContext").attr("data-context");
+                       var newContext=oldContext.replace(reImage, '"image":"' + value +'"');
+                       $$("#wrapAttendees img.circle[data-id='"+index+"']").attr("src", value).addClass("completed").closest("a.loadContext").attr("data-context", newContext);
+                   });
+               }else{
+                   displayAlert(data["message"], $$("body"));
+               }
+            return false;
+       }, error: function(){
+           isAjaxLoaded=false;
+       }
+    });
+}
+
+function loadAgendaFeedbackNotifications(eventid, sectionid){
+    if(isAjaxLoaded) return false;
+    isAjaxLoaded=true;
+    var postData={eventid: eventid, sectionid: sectionid, context: "loadAgendaFeedbackNotifications"};
+    
+    
+    $$.ajax({
+       type: "POST",
+       url: pathToAjaxDispatcher,
+       data: postData,
+       dataType: "json",
+       success: function(data){
+           isAjaxLoaded=false;
+               if(data["success"]==1){
+                   var alertItem=$$('<div class="badge top50 abs text-center"><span class="abs top50 left50">!</span></div>');
+                   $$("#wrapAgendas div.wrapSingleAgendaDateBlock a > div.item > div.badge").remove();
+                   
+                   $$.each(data["results"], function (index, value) {
+                       console.log(index);
+                       $$("#wrapAgendas div.wrapSingleAgendaDateBlock a[data-id='"+index+"'] > div.item").prepend($$(value))
+                   });
+                   window.setTimeout(function(){
+                       loadAgendaFeedbackNotifications(eventid, sectionid);
+                   }, reloadAgendaFeedbackNotificationsEvery);
+               }else{
+                   displayAlert(data["message"], $$("body"));
+               }
+            return false;
+       }, error: function(){
+           isAjaxLoaded=false;
+       }
+    });
+}
 
 
 $$(document).on("submit", "form[data-action='handlewithform']", function(e){
@@ -1140,8 +1215,10 @@ $$(document).on("click", "[data-action='addedititem']", function(e){
                                  });
                                  
                             if(postData["id"]==1){
+                                loadProfilePhotos(postData["eventid"]);
                                 $$(document).detectWithScroll();
                             }else if(postData["id"]==3){
+                                loadAgendaFeedbackNotifications(postData["eventid"], postData["id"]);
                                 $$(document).detectWithScroll1();
                             }
                             if(postData["id"]==1){
@@ -1286,9 +1363,11 @@ myApp.onPageInit('index', function (page) {
             });
         */
       }
-      if($$("div.page.page-on-center div.page-content #wrapTopAgendaDates").length>0){
+      if($$("div.page.page-on-center #wrapTopAgendaDates").length>0){
             $$(document).detectWithScroll1();
-        }
+      }
+      
+      
 });
 
 
@@ -1304,7 +1383,12 @@ myApp.onPageInit('note', function (page) {
 });
 
 myApp.onPageBack('*', function(page){
-    autoLoadWelcomeTemplate();
+    autoLoadWelcomeTemplate(page);
+});
+
+myApp.onPageInit('attendee', function (page) {
+    console.log('attendee page initialized attendeeid=' + page.context.attendeeid);
+    autoLoadCurrentAttendeeDetails(page.context.attendeeid, page.context.eventid);
 });
 
 myApp.onPageInit('question', function (page) {
@@ -1483,6 +1567,9 @@ function checkIsUserStillLoggedIn(token){
        success: function(data){
            isAjaxLoaded=false;
                if(data["success"]==1){
+                   if(data["results"]["eventexpired"]){
+                       $$("#splashScreen").addClass("noBackground");
+                   }
                     if(data["results"]["eventname"]){
                         localStorage.setItem('welcomeTemplate', JSON.stringify(data));
                         var currentPage=mainView.activePage.name;
@@ -1498,11 +1585,19 @@ function checkIsUserStillLoggedIn(token){
                                         context: data
                                     });
                                 }else{
+                                    
                                 
                                     if(data["results"]["eventlogo"]){
                                         $$("#splashScreen div[data-target='replacewithsplashlogo']").html("").append($$(data["results"]["eventlogo"]));
                                         $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
                                     }
+                                    if(data["results"]["eventexpired"]){
+                                        $$("#splashScreen div[data-target='replacewithsplashlogo']").append($$(data["results"]["welcometext"]));
+                                        $$("#splashScreen div[data-target='replacewithsplashlogo']").addClass("fadeInUp");
+                                        
+                                        return false;
+                                    }
+                                    
 
 
                                      var data=JSON.parse(localStorage.getItem('welcomeTemplate'));
@@ -1593,6 +1688,9 @@ function checkIsUserStillLoggedIn(token){
 
 function autoLoadWelcomeTemplate(){
     //if(isAjaxLoadedLoop) return false;
+    if(arguments[0]){
+        var page=arguments[0];
+    }
     isAjaxLoadedLoop=true;
     var postData={context: "loadWelcomeTemplate"};
     
@@ -1606,7 +1704,7 @@ function autoLoadWelcomeTemplate(){
                if(data["success"]==1){
                    var currentPageName=mainView.activePage.name;
                    
-                   console.log("It is updating welcomeTemplate localStorage now.");
+                   console.log("It is updating welcomeTemplate localStorage now for page: " + currentPageName);
                    localStorage.setItem('welcomeTemplate', JSON.stringify(data));
                    akaLocalStorageWelcomeTemplate=JSON.stringify(data);
             if(currentPageName=='index'){
@@ -1646,6 +1744,16 @@ function autoLoadWelcomeTemplate(){
                               reload: true,
                               context: data
                           });
+                        }
+                        
+                        
+                    }
+                 }else if(currentPageName=='agenda'){
+                     autoLoadCurrentAgenda(page.context.id);
+                 }else if(currentPageName=='custom'){
+                     if($$("div.page.page-on-center div.page-content > div > #wrapAgendas").length>0){
+                        if(data["results"]["eventname"]){
+                            loadAgendaFeedbackNotifications(data["results"]["eventid"], 3);
                         }
                     }
                  }
@@ -1699,6 +1807,11 @@ function autoLoadCurrentAgenda(id){
        success: function(data){
            isAjaxLoaded=false;
                if(data["success"]==1){
+                   if(data["badge"]){
+                       $$("[data-target='agendasurveybtn'] > div.badge").remove();
+                       $$("[data-target='agendasurveybtn']").prepend($$(data["badge"]));
+                   }
+                   
                    $$("[data-target='mapphoto']").html(data["mapimage"]);
                    if(data["speakerdetails"]){
                        $$("[data-target='speakerdetails']").html(data["speakerdetails"]);
@@ -1720,6 +1833,56 @@ function autoLoadCurrentAgenda(id){
                     });
                    
                    
+               }else{
+                   
+               }
+           }, error: function(){
+           isAjaxLoaded=false;
+       }
+   });
+}
+
+function autoLoadCurrentAttendeeDetails(id, eventid){
+    if(isAjaxLoaded) return false;
+    isAjaxLoaded=true;
+    var postData={id: id, eventid: eventid, context: "loadCurrentAttendeeDetails"};
+    
+    $$.ajax({
+       type: "POST",
+       url: pathToAjaxDispatcher,
+       data: postData,
+       dataType: "json",
+       success: function(data){
+           isAjaxLoaded=false;
+               if(data["success"]==1){
+                   if(data["records"]){
+                        var data1=data["records"];
+                        var questionsAndAnswers="";
+                        var socialNetworks="";
+                        
+                        if(data1["questionsandanswers"]){
+                            questionsAndAnswers=data1["wrapQuestionsAndAnswers"];
+                        }
+                        
+                        
+                        if(data1["facebook"]){
+                            socialNetworks +='<a target="_blank" class="external" href="'+data1["facebook"]+'"><img src="images/facebook.png" alt="Facebook" /></a>';
+                        }
+                        if(data1["twitter"]){
+                            socialNetworks +='<a target="_blank" class="external" href="'+data1["twitter"]+'"><img src="images/twitter.png" alt="" /></a>';
+                        }
+                        if(data1["email"]){
+                            socialNetworks +='<a class="external" href="mailto:'+data1["email"]+'"><img src="images/emailicon.png" alt="" /></a>';
+                        }
+                        if(data1["linkedin"]){
+                            socialNetworks +='<a target="_blank" class="external" href="'+data1["linkedin"]+'"><img src="images/linkedin.png" alt="" /></a>';
+                        }
+                        window.setTimeout(function(){
+                            $$("#wrapAttendees > .personalBlock").addClass(data1["classAnswers"]);
+                            $$("#wrapAttendees > .personalBlock .socialIcons").html(socialNetworks);
+                            $$("#wrapAttendees > .surveyBlock").html(questionsAndAnswers);
+                        }, 200);
+                   }
                }else{
                    
                }

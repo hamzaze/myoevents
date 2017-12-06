@@ -10,8 +10,27 @@
         </div>
         <div class="page-content">
             <div class="wrapAgendaDetails">
+                {{#if isaskorsessionfeedback}}
+                <div class="wrapAdditionalButtons">
+                    <div class="row">
+                        {{#if askenabled}}
+                            <a class="small text-center btn btn-blue1 {{btnClass}}" href="question.html" data-context='{{stringify this}}'>Ask Question</a>
+                        {{/if}}
+                        {{#if notes}}
+                            <a class="small text-center btn btn-blue2 {{btnClass}}" href="#" data-action="addedititem" data-context="wrapCustomPage" data-id="9" data-eventid="{{eventid}}">+ Add Note</a>
+                        {{/if}}
+                        {{#if sessionfeedback}}
+                            {{#if agendasurvey}}
+                            <a data-target="agendasurveybtn" class="small text-center btn btn-blue3 {{btnClass}}" href="survey.html" data-context='{"id": "{{id}}", "eventid": "{{eventid}}", "sectionid": "{{sectionid}}"}'>Feedback</a>
+                            {{/if}}
+                        {{/if}}
+                        <div class="noFloat"></div>
+                    </div>
+                </div>
+                {{/if}}
                 <div class="personalBlock text-center text-white">
                     <div class="box effect2">
+                        <div class="padd10"></div>
                         <h2>{{description}}</h2>
                         {{if name}}
                             <p><i class="fa fa-map-marker" aria-hidden="true"></i> {{name}}</p>
@@ -29,42 +48,7 @@
                     <div class="padd20 hasShadow text-center" data-target="mapphoto"><a href="#" data-src="{{image}}" data-action="openphotoinpopup"></a></div>
                     {{/if}}
                 </div>
-                    {{#if isaskorsessionfeedback}} 
-                    <div class="padd20 bg-darkblue">
-                        {{#if askenabled}}
-                            <a href="question.html" data-context='{{stringify this}}'>
-                                <div class="item bg-white text-blue text-left">
-                                    <div class="flexbox">
-                                        <div class="image-holder" style="background-image: url(images/askQuestion.png);"></div>
-                                        <div class="flex1 text-center"><h3>Ask or vote on a Question</h3></div>
-                                    </div>
-                                </div>
-                            </a>
-                        {{/if}}
-                        {{#if sessionfeedback}}
-                            {{#if agendasurvey}}
-                                <a href="survey.html" data-context='{"id": "{{id}}", "eventid": "{{eventid}}", "sectionid": "{{sectionid}}"}'>
-                                    <div class="item bg-white text-blue text-left">
-                                        <div class="flexbox">
-                                            <div class="image-holder" style="background-image: url(images/sessionFeedback.png);"></div>
-                                            <div class="flex1 text-center"><h3>Session Feedback</h3></div>
-                                        </div>
-                                    </div>
-                                </a>
-                            {{/if}}
-                        {{/if}}
-                        {{#if notes}}
-                        <a href="#" data-action="addedititem" data-context="wrapCustomPage" data-id="9" data-eventid="{{eventid}}">
-                            <div class="item bg-white text-blue text-left">
-                                <div class="flexbox">
-                                    <div class="image-holder" style="background-image: url(images/addNote.png);"></div>
-                                    <div class="flex1 text-center"><h3>+ Add a note</h3></div>
-                                </div>
-                            </div>
-                        </a>
-                        {{/if}}
-                    </div>
-                    {{/if}}
+                    
                 </div>
             </div>
         </div>

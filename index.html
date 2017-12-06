@@ -371,7 +371,9 @@
                                                         {{/if}}
                                                         <div class="item text-left text-white">
                                                             <div class="flexbox">
-                                                                <div class="image-holder"><img src="{{image}}" alt="{{name}}" /></div>
+                                                                {{#if image}}
+                                                                    <div class="image-holder"><img src="{{image}}" alt="{{name}}" /></div>
+                                                                {{/if}}
                                                                 <div class="flex1"><i class="f7-icons top50 abs text-blue">chevron_right</i><h3>{{name}}</h3></div>
                                                             </div>
                                                         </div>
@@ -489,22 +491,19 @@
                                                                 {{#if results.records}}
                                                                     <div class="row">
                                                                         <div class="col-100">
+                                                                        <div class="wrappAlphabetBlock">
                                                                             {{#each results.records}}
-                                                                                <div class="wrappAlphabetBlock" data-alphabet="{{@key}}">
-                                                                                <div class="wrapAlpha text-white text-left"><strong>{{@key}}</strong></div>
-                                                                                {{#each this}}
-                                                                                    <a href="attendee.html" data-context='{{stringify this}}'>
+                                                                                    <a class="loadContext" href="attendee.html" data-context='{{stringify this}}'>
                                                                                     <div class="item text-left text-white{{itemClass}}">
                                                                                         <div class="flexbox">
-                                                                                            <img class="circle" src="{{image}}" alt="{{firstname}} {{lastname}}" />
+                                                                                            <img class="circle" data-id="{{attendeeid}}" />
                                                                                             <div class="flex1"><i class="f7-icons top50 abs text-white">chevron_right</i><h3>{{firstname}} {{lastname}}</h3></div>
                                                                                         </div>
                                                                                     </div>
                                                                                     </a>
-                                                                                {{/each}}
-                                                                                </div>
                                                                             {{/each}}
-                                                                         </div>
+                                                                        </div>
+                                                                        </div>
                                                                     </div>
                                                                 {{/if}}
                                                             {{/if}

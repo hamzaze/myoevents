@@ -298,7 +298,7 @@ div.ajaxLoader > .fineloader{
     z-index: 1;
 }
 
-[data-page="custom"] > .overlayBlue, [data-page="discussion"] > .overlayBlue, [data-page="note"] > .overlayBlue, [data-page="me"] > .overlayBlue, [data-page="agenda"] > .overlayBlue, [data-page="survey"] > .overlayBlue, [data-page="poll"] > .overlayBlue, [data-page="question"] > .overlayBlue{
+[data-page="custom"] > .overlayBlue, [data-page="discussion"] > .overlayBlue, [data-page="note"] > .overlayBlue, [data-page="me"] > .overlayBlue, [data-page="agenda"] > .overlayBlue, [data-page="survey"] > .overlayBlue, [data-page="poll"] > .overlayBlue, [data-page="question"] > .overlayBlue, [data-page="attendee"] > .overlayBlue, #splashScreen.noBackground > .overlayBlue{
     background: #0a5183;
 }
 
@@ -416,6 +416,27 @@ button{
     color: #fff;
 }
 
+.btn-blue1, .btn-blue1:hover{
+    background-color: #5192c0;
+    border-color: #5192c0;
+    color: #fff;
+}
+
+.btn-blue2, .btn-blue2:hover{
+    background-color: #367aaa;
+    border-color: #367aaa;
+    color: #fff;
+}
+
+.btn-blue3, .btn-blue3:hover{
+    background-color: #19639a;
+    border-color: #19639a;
+    color: #fff;
+}
+
+div.wrapAdditionalButtons .btn{
+    padding: 12px 0;
+}
 
 #frmLoginFEUser ::-webkit-input-placeholder, #frmForgotPassword ::-webkit-input-placeholder, #frmResetPasswordFEUser ::-webkit-input-placeholder{
     color: #fff;
@@ -1471,6 +1492,17 @@ div#wrapAttendees.wrapAttractions div.item img.circle, div#wrapContacts.wrapAttr
     margin-top: 10px;
 }
 
+div#wrapAttendees.wrapAttractions div.item img.circle{
+    opacity: 0;
+     transition: opacity 0.7s ease-out 0.2s;
+    -moz-transition: opacity 0.7s ease-out 0.2s;
+    -webkit-transition: opacity 0.7s ease-out 0.2s;
+}
+
+div#wrapAttendees.wrapAttractions div.item img.circle.completed{
+    opacity: 1;
+}
+
 div#wrapAgendaQuestions div.item img.circle{
     margin: 0;
     width: 30px;
@@ -1524,6 +1556,16 @@ div#wrapAgendas.wrapAttractions div.item{
     overflow: visible;
 }
 
+div#wrapAgendas.wrapAttractions div.item div.badge{
+    right: 30px;
+    top: 50%;
+    margin: 0;
+    border: none;
+    border: 0;
+    width: 20px;
+    height: 20px;
+}
+
 div#wrapAgendas.wrapAttractions div.item.hasSpeaker{
     color: #fff;
 }
@@ -1549,6 +1591,7 @@ div#wrapAgendas.wrapAttractions div.item .flex1{
     padding-left: 90px;
     padding-top: 10px;
     padding-bottom: 10px;
+    padding-right: 50px;
 }
 
 .text-muted{
@@ -1937,6 +1980,10 @@ div#wrapUserNotes.wrapAttractions div.item.item-content a.relative{
     right: 0;
     margin-top: -5px;
     margin-right: -5px;
+}
+
+.badge.success{
+    background-color: #9acb6b;
 }
 
 .topHeader nav#menu ul > li > div.btn.btn-upload{
@@ -2339,6 +2386,10 @@ div.wrapQuestion div.mf-radio input.mf-radio:checked + span.mf-radio:before{
     background-size: cover;
 }
 
+#splashScreen.noBackground{
+    background-image: none;
+}
+
 #splashScreen div.logo{
     z-index: 10;
 }
@@ -2393,6 +2444,28 @@ div.bg-image{
 
 div.wrapAllForms{
     min-height: 200px;
+}
+
+.row .col-100{
+    width: 100%;
+}
+
+.row .col-50{
+    width: 50%;
+}
+
+.row .col-33{
+    width: 33.3333%;
+}
+
+div.wrapAdditionalButtons .btn > .badge{
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    right: 10px;
+    margin: 0;
+    border: none;
+    border: 0;
 }
 
 @-webkit-keyframes spin {
