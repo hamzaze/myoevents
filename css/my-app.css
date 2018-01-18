@@ -248,6 +248,10 @@ div.ajaxLoader > .fineloader{
     vertical-align: middle;
 }
 
+.inline-fullwidth > .inline-block{
+    width: 100%;
+}
+
 .button-round{
     border-radius: 50%;
     -moz-border-radius: 50%;
@@ -298,11 +302,11 @@ div.ajaxLoader > .fineloader{
     z-index: 1;
 }
 
-[data-page="custom"] > .overlayBlue, [data-page="discussion"] > .overlayBlue, [data-page="note"] > .overlayBlue, [data-page="me"] > .overlayBlue, [data-page="agenda"] > .overlayBlue, [data-page="survey"] > .overlayBlue, [data-page="poll"] > .overlayBlue, [data-page="question"] > .overlayBlue, [data-page="attendee"] > .overlayBlue, #splashScreen.noBackground > .overlayBlue{
+[data-page="custom"] > .overlayBlue, [data-page="discussion"] > .overlayBlue, [data-page="note"] > .overlayBlue, [data-page="me"] > .overlayBlue, [data-page="agenda"] > .overlayBlue, [data-page="survey"] > .overlayBlue, [data-page="poll"] > .overlayBlue, [data-page="question"] > .overlayBlue, [data-page="attendee"] > .overlayBlue, #splashScreen.noBackground > .overlayBlue, [data-page="cmequestions"] > .overlayBlue{
     background: #0a5183;
 }
 
-[data-page="custom"] > .overlayBlue.wrapSponsors{
+[data-page="custom"] > .overlayBlue.wrapSponsors, [data-page="cmequestions"] > .overlayBlue{
     background: #fff;
 }
 
@@ -432,6 +436,13 @@ button{
     background-color: #19639a;
     border-color: #19639a;
     color: #fff;
+}
+
+button.btn.btn-tourquise{
+    border: solid 1px #25b9a6;
+    background-color: #25b9a6;
+    color: #fff;
+    padding: 7px 20px;
 }
 
 div.wrapAdditionalButtons .btn{
@@ -724,6 +735,13 @@ h1.small{
     font-size: 1rem;
 }
 
+hr{
+    border: none;
+    border: 0;
+    border-top: solid 1px #ccc;
+    margin: 10px 0;
+}
+
 .text-orange{
     color: #fc0;
 }
@@ -748,12 +766,21 @@ h1.small{
     padding: 10px;
 }
 
+.padd15{
+    padding: 15px;
+}
+
 .padd20{
     padding: 20px;
 }
 
 .padd-right44{
     padding-right: 44px;
+}
+
+.paddTopBottom5{
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .paddTopBottom20{
@@ -828,7 +855,7 @@ h1.small{
     margin-top: 0;
 }
 
-.topHeader nav#menu ul{
+.topHeader nav#menu ul, ul{
     margin: 0;
     padding: 0;
     list-style-type: none;
@@ -1181,10 +1208,15 @@ div#wrapPolls.wrapAttractions div.item[data-answered="1"]{
     color: #fff;
 }
 
-div#wrapSurveys.wrapAttractions div.item{
+div#wrapSurveys.wrapAttractions div.item, div#wrapCMEQuestions.wrapAttractions div.item{
     height: auto;
     padding: 15px;
     margin-bottom: 20px;
+}
+
+div#wrapCMEQuestions.wrapAttractions div.item{
+    padding: 0;
+    background-color: transparent;
 }
 
 div#wrapSurveys.wrapAttractions div.item .collapse{
@@ -1199,9 +1231,24 @@ div#wrapSocialMedia.wrapAttractions div.item, div#wrapInfobooth.wrapAttractions 
     height: 70px;
 }
 
-div#wrapSurveys.wrapAttractions div.item div.wrapQuestion h3{
+div#wrapCMEQuestions.wrapAttractions div.item div.wrapQuestion{
+    padding: 15px;
+}
+
+div#wrapSurveys.wrapAttractions div.item div.wrapQuestion h3, div#wrapCMEQuestions.wrapAttractions div.item div.wrapQuestion h3{
     font-weight: 400;
     font-size: 1rem;
+}
+
+div#wrapCMEQuestions.wrapAttractions div.item div.wrapQuestion h3{
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 120%;
+    margin-bottom: 0;
+}
+
+div#wrapCMEQuestions.wrapAttractions div.item div.wrapQuestion span.text-white-transparent{
+    font-size: 0.8rem;
 }
 
 div#wrapSurveys.wrapAttractions div.item div.wrapQuestion div.list-block, div.wrapAttractions div.fRow > div.list-block{
@@ -2483,6 +2530,289 @@ div.wrapAdditionalButtons .btn > .badge{
     margin: 0;
     border: none;
     border: 0;
+}
+
+.checkbox > input[type=checkbox], .checkbox > input[type=radio]{
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.checkbox > input[type=checkbox] + label, .checkbox > input[type=checkbox] + label > span,
+.checkbox > input[type=radio] + label, .checkbox > input[type=radio] + label > span{
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
+.checkbox > input[type=checkbox] + label > span, .checkbox > input[type=radio] + label > span{
+    padding: 5px 10px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    color: #777;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+.inline-fullwidth > .inline-block .checkbox > input[type=checkbox] + label > span, .inline-fullwidth > .inline-block .checkbox > input[type=radio] + label > span{
+    text-align: left;
+}
+
+.checkbox > input[type=checkbox]:checked + label > span, .checkbox > input[type=radio]:checked + label > span{
+    color: #fff;
+}
+
+.checkbox-primary > input[type=checkbox] + label > span, .checkbox-primary > input[type=radio] + label > span{
+    background-color: #e6e6e6;
+}
+
+.checkbox-primary > input[type=checkbox]:checked + label > span, .checkbox-primary > input[type=radio]:checked + label > span{
+    background-color: #25b9a6;
+}
+
+#wrapCMEQuestions .simple-list{
+    margin: 20px 0;
+}
+
+#wrapCMEQuestions .simple-list-item:last-child hr{
+    display: none;
+}
+
+.range-slider{
+    height: 44px;
+    margin-bottom: 20px;
+    margin-top: 40px;
+    padding: 0;
+    overflow: visible;
+}
+
+.range-bar-active-tooltip{
+    display: block;
+    position: absolute;
+    top: -44px;
+}
+
+.range-bar-active-tooltip > div{
+    display: block;
+    position: relative;
+    width: 50px;
+    margin-left: -25px;
+    padding: 2px;
+    line-height: 100%;
+    background: #fff;
+    color: #25b9a6;
+    font-weight: 400;
+    font-size: 1.1rem;
+    text-align: center;
+    box-shadow: 0 0 2px rgba(0,0,0, 0.4);
+    -moz-box-shadow: 0 0 2px rgba(0,0,0, 0.4);
+    -webkit-box-shadow: 0 0 2px rgba(0,0,0, 0.4);
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    z-index: 5;
+}
+
+.range-bar-active-tooltip > div:before{
+    content: "";
+    display: block;
+    position: absolute;
+    border-style: solid;
+    border-width: 12px 12px;
+    border-color: rgba(0,0,0, 0.1) transparent transparent transparent;
+    top: 100%;
+    left: 50%;
+    margin-left: -12px;
+    z-index: 1;
+}
+
+.range-bar-active-tooltip > div:after{
+    content: "";
+    display: block;
+    position: absolute;
+    border-style: solid;
+    border-width: 10px 10px;
+    border-color: #fff transparent transparent transparent;
+    top: 100%;
+    left: 50%;
+    margin-left: -10px;
+    z-index: 2;
+}
+
+.range-bar {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    z-index: 1;
+}
+
+.range-slider .range-bar {
+    background: #e8e8e8;
+    border-radius: 0;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    height: 12px;
+    margin-top: -12px;
+}
+
+
+.range-bar-active, .range-bar-active-helper, .range-labels{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: transparent;
+    overflow: hidden;
+}
+
+.range-labels{
+    width: 100%;
+    top: 28px;
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.range-bar-active-helper{
+    width: calc(100vw - 30px);
+}
+
+.range-bar-active-every{
+    width: 25%;
+    height: 100%;
+    background: #25b9a6;
+    float: left;
+}
+
+.range-bar-active-every:after{
+    content: "";
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    right: 0;
+    top: 0;
+    background: #fff;
+}
+
+.range-slider .range-knob-wrap {
+    z-index: 20;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 28px;
+    width: 28px;
+    margin-top: -14px;
+    margin-left: -14px;
+    display: none;
+}
+
+.range-slider .range-knob {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.range-slider .range-knob {
+    background: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+    border: solid 4px #25b9a6;
+}
+
+#wrapCMEQuestions input.mf-input{
+    background-color: #e6e6e6;
+    font-size: 0.8rem;
+}
+
+.range-knob-label {
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    text-align: center;
+    -webkit-transition-duration: 120ms;
+    transition-duration: 120ms;
+    -webkit-transition-property: -webkit-transform;
+    transition-property: -webkit-transform;
+    transition-property: transform;
+    transition-property: transform,-webkit-transform;
+    -webkit-transform: translateY(100%) scale(0);
+    transform: translateY(100%) scale(0);
+}
+
+.range-slider .range-knob-label {
+    min-width: 20px;
+    height: 20px;
+    line-height: 20px;
+    background: #fff;
+    border-radius: 5px;
+    color: #000;
+    font-size: 12px;
+    margin-bottom: 6px;
+    -webkit-transform: translateX(-50%) translateY(100%) scale(0);
+    transform: translateX(-50%) translateY(100%) scale(0);
+}
+
+.range-slider input[type="range"]{
+    display: block;
+    z-index: 10;
+    background: transparent;
+    height: 20px;
+}
+
+.range-slider input[type="range"]::-moz-range-track{
+    height: 12px;
+    background-color: transparent;
+}
+
+.range-slider input[type="range"]::-webkit-slider-runnable-track{
+    height: 12px;
+    background-color: transparent;
+}
+
+.range-slider input[type=range]::-moz-range-thumb{
+    content: "";
+    background: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+    border: solid 4px #25b9a6;
+}
+
+.range-slider input[type=range]::-webkit-slider-thumb{
+    content: "";
+    background: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+    border: solid 4px #25b9a6;
 }
 
 @-webkit-keyframes spin {

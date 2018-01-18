@@ -522,6 +522,10 @@ DP.validateForm = function(){
                                                     }else if(whatForm=="frmUserExperienceSurvey"){
                                                         displayInfo(data["message"], $$("body"));
                                                         $$("#"+whatForm).closest("div.page.page-on-center").find("#topHeader a[data-templatename='welcomeTemplate']").click();
+                                                    }else if(whatForm=="frmUserExperienceCMEQuestions"){
+                                                        displayInfo(data["message"], $$("body"));
+                                                        $$("#"+whatForm).closest("div.page.page-on-center").find("#topHeader a[data-templatename='welcomeTemplate']").click();
+                                                        
                                                     }else if(whatForm=="frmAddNewAgendaQuestion"){
                                                         displayInfo(data["message"], $$("body"));
                                                          $$("#wrapAgendaQuestions div[data-target='questionlist']").html(data["content"]);
@@ -855,6 +859,29 @@ function checkCookie() {
     } else {
         return false;
     }
+}
+
+function handleWithCMECourseForm(form){
+    form.on("click", "input[type='checkbox'][data-action='toggleother']", function(e){
+        var $this=$$(this);
+        var divRelated=$this.closest(".simple-list-item").find("div[data-rel='other']");
+        if($this.is(":checked")){
+            divRelated.removeClass("hidden");
+        }else{
+            divRelated.addClass("hidden").find("input[type=text]").val("");
+        }
+    });
+    
+    form.on("click", "input[type='radio'][data-action='toggleother']", function(e){
+        var $this=$$(this);
+        var divRelated=form.find("div[data-rel='other6']");
+        if($this.val()==1){
+            divRelated.removeClass("hidden");
+        }else{
+            divRelated.addClass("hidden").find("input[type=checkbox]").prop("checked", false);
+            divRelated.addClass("hidden").find("input[type=text]").val("").closest("div[data-rel='other']").addClass("hidden");
+        }
+    });
 }
 
 function handleWithSurveyForm(form){
@@ -1406,6 +1433,11 @@ myApp.onPageInit('survey', function (page) {
     autoLoadCurrentSurvey(page.context.id, page.context.eventid, page.context.sectionid);
 });
 
+myApp.onPageInit('cmequestions', function (page) {
+    console.log('cmequestions page initialized =' + page.context.eventid + " : " + page.context.sectionid);
+    autoLoadCurrentCMEQuestions(page.context.eventid, page.context.sectionid);
+});
+
 myApp.onPageInit('poll', function (page) {
     console.log('poll page initialized');
    if($$("div.page-poll").length>0){
@@ -1764,6 +1796,33 @@ function autoLoadWelcomeTemplate(){
     });
 }
 
+function autoLoadCurrentCMEQuestions(eventid, sectionid){
+    if(isAjaxLoaded) return false;
+    isAjaxLoaded=true;
+    var postData={eventid: eventid, sectionid: sectionid, context: "loadCurrentCMEQuestions"};
+    
+    $$.ajax({
+       type: "POST",
+       url: pathToAjaxDispatcher,
+       data: postData,
+       dataType: "json",
+       success: function(data){
+           isAjaxLoaded=false;
+               if(data["success"]==1){
+                   $$("[data-target='allcmequestions']").html(data["content"]);
+                   handleWithRangeSliders();
+                   window.setTimeout(function(){
+                      handleWithCMECourseForm($$("#frmUserExperienceCMEQuestions"));
+                   }, 200);
+               }else{
+                   
+               }
+           }, error: function(){
+           isAjaxLoaded=false;
+       }
+   });
+}
+
 function autoLoadCurrentSurvey(id, eventid, sectionid){
     if(isAjaxLoaded) return false;
     isAjaxLoaded=true;
@@ -1997,6 +2056,62 @@ function autoLoadCurrentDiscussion(id, isAjaxLoader){
             }
            isAjaxLoaded=false;
        }
+    });
+}
+
+function handleWithRangeSliders(){
+    $$(document).on("input", $$("input[type=range]"), function(e){
+        var $this=$$(this);
+        var offset=0;
+        var max=$this.attr("max");
+        
+        var currentValue=parseFloat($this.val());
+        var percent=currentValue/max;
+        var width=$this.width();
+        var step=$this.attr("step");
+        var currentTextValue=$this.val()/step;
+        switch(currentValue){
+            case 0:
+                offset=12;
+            break;
+            case 1:
+                offset=9;
+            break;
+            case 2:
+                offset=8;
+            break;
+            case 3:
+                offset=5;
+            break;
+            case 4:
+                offset=4;
+            break;
+            case 5:
+                offset=0;
+            break;
+            case 6:
+                offset=-2;
+            break;
+            case 7:
+                offset=-3;
+            break;
+            case 8:
+                offset=-5;
+            break;
+            case 9:
+                offset=-7;
+            break;
+            case 10:
+                offset=-10;
+            break;
+        }
+        currentValue *=10;
+        var currentWidth=percent*width + offset;
+        currentTextValue=parseFloat(currentTextValue.toFixed(0));
+        var activeBar=$this.closest(".range-slider").find(".range-bar-active");
+        var activeTooltip=$this.closest(".range-slider").find(".range-bar-active-tooltip");
+        activeBar.css({width: currentWidth+"px"});
+        activeTooltip.css({left: currentValue+"%", marginLeft: offset + "px"}).children("div").text(currentTextValue);
     });
 }
 
